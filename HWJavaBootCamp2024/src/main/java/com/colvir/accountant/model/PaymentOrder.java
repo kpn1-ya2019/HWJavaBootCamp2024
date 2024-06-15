@@ -11,11 +11,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class PaymentOrder {
     //Сущность: платежные поручения перевода заработной платы (кому, сумма, дата перечисления)
-    private Long id;
-    private Long idType;
-    private Long idDepartment;
-    private Long idEmployee;
+    private Long   id;
+    private Long   idType;
+    private Long   idEmployee;
+    private Date   datePayment;
     private Double amount;
-    private Date datePayment;
 
 }

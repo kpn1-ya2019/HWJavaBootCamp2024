@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Employee {
-  //Сущность: сотрудник (имя, фамилия, зарплата, отдел)
-  private Long id;
+  //Сущность: сотрудник (имя, отдел, фамилия, зарплата)
+  private Long   id;
+  private Long   idDepartment;
   private String surname;
   private String name;
   private String patronymic;
   private Double salary;
-  private Long idDepartment;
 
 }
