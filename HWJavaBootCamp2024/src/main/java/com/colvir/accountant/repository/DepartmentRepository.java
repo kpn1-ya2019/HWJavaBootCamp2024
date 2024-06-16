@@ -15,7 +15,7 @@ public class DepartmentRepository {
   }
 
   public List<Department> findAll() {
-      return new ArrayList<>(departments);
+      return new ArrayList<Department>(departments);
   }
 
   public Optional<Department> findById(Long id) {

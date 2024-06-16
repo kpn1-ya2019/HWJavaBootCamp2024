@@ -14,6 +14,7 @@ public class PaymentOrder {
     private Long   id;
     private Long   idType;
     private Long   idEmployee;
+    private Long   idDepartment;
     private Date   datePayment;
     private Double amount;
 
