@@ -20,8 +20,10 @@ public class EmployeeController {
     @GetMapping
     public EmpPageResponse getAll() {return  employeeService.getAll(); }
 
-    @GetMapping("/{id}{idDepartment}")
-    public EmployeeResponse getByIdAndIdDept(@PathVariable("id") Long id, @PathVariable("idDepartment") Long idDepartment) { return employeeService.getByIdAndIdDept(id, idDepartment); }
+    @GetMapping("/{id}, {idDepartment}")
+    public EmployeeResponse getByIdAndIdDept(@PathVariable("id") Long id, @PathVariable("idDepartment") Long idDepartment) {
+        return employeeService.getByIdAndIdDept(id, idDepartment);
+    }
 
     @PutMapping
     public EmployeeResponse update(@RequestBody UpdateEmployeeRequest request) {return employeeService.update(request); }

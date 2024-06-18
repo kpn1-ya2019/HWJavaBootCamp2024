@@ -43,6 +43,7 @@ public class PaymentOrderRepository {
         return pmtForDelete;
     }
 
+    //todo доделать метод поиска по типу, песоналу и дате
     public PaymentOrder getByTypeEmpDate(Long idType, Long idEmployee, Date datePayment) {
         return paymentOrders.stream()
                 .filter(paymentOrder ->  ( ( idType != null) || (idEmployee != null) || (datePayment != null) ) &&

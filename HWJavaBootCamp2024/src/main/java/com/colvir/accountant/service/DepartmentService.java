@@ -5,15 +5,11 @@ import com.colvir.accountant.exception.DeptNotFoundException;
 import com.colvir.accountant.mapper.DepartmentMapper;
 import com.colvir.accountant.model.Department;
 import com.colvir.accountant.repository.DepartmentRepository;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
-
-import static com.colvir.accountant.model.InternalErrorStatus.DEPARTMENT_DOES_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +37,11 @@ public class DepartmentService {
     public DepartmentResponse getById(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(()-> new DeptNotFoundException(String.format("%s с id = %s не найдено", "Подразделение",id)));
+        return departmentMapper.deptToDeptResponse(department);
+    }
+    public DepartmentResponse getByCode(String code) {
+        Department department = departmentRepository.findByCode(code)
+                .orElseThrow(()-> new DeptNotFoundException(String.format("%s с кодом = %s не найдено", "Подразделение", code)));
         return departmentMapper.deptToDeptResponse(department);
     }
 

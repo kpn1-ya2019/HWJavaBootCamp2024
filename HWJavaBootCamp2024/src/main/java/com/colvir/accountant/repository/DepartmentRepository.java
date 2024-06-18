@@ -56,4 +56,11 @@ public class DepartmentRepository {
               .findFirst()
               .orElse(null);
   }
+
+  public Optional<Department> findByCode(String code) {
+        return departments.stream()
+                .filter(department -> department.getCode().equals(code))
+                .findFirst();
+  }
 }
+
