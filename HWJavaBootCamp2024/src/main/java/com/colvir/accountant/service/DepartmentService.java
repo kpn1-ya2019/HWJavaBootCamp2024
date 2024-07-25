@@ -19,12 +19,12 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    private Random randomDept = new Random();
+    private final Random randomDept = new Random();
 
     public GenerateDeptResponse generateDept(GenerateDeptRequest request) {
         String code = request.getCode();
         String name = request.getName();
-        Department newDepartment = new Department(randomDept.nextLong(), code, name);
+        Department newDepartment = new Department(randomDept.nextInt(), code, name);
         departmentRepository.save(newDepartment);
         return  departmentMapper.deptToGenerateDeptResponse(newDepartment);
     }
@@ -34,7 +34,7 @@ public class DepartmentService {
         return departmentMapper.departmentsToDeptPageResponse(allDepartments);
     }
 
-    public DepartmentResponse getById(Long id) {
+    public DepartmentResponse getById(Integer id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(()-> new DeptNotFoundException(String.format("%s с id = %s не найдено", "Подразделение",id)));
         return departmentMapper.deptToDeptResponse(department);
@@ -46,7 +46,7 @@ public class DepartmentService {
     }
 
     public DepartmentResponse update(UpdateDeptRequest request) {
-        Long departmentId = request.getId();
+        Integer departmentId = request.getId();
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new DeptNotFoundException(String.format("%s с id = %s не найдено", "Подразделение", departmentId)));
 
@@ -57,7 +57,7 @@ public class DepartmentService {
         return departmentMapper.deptToDeptResponse(updatedDept);
     }
 
-    public DepartmentResponse delete(Long id) {
+    public DepartmentResponse delete(Integer id) {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new DeptNotFoundException(String.format("%s с id = %s не найдено", "Подразделение", id)));

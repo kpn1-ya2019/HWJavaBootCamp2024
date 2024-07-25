@@ -2,7 +2,6 @@ package com.colvir.accountant.mapper;
 
 import com.colvir.accountant.dto.*;
 import com.colvir.accountant.model.AgrPaymentOrder;
-import com.colvir.accountant.model.PaymentOrder;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -23,4 +22,5 @@ public interface AgrPaymentOrderMapper {
         List<AgrPaymentOrderResponse> agrPmtOrderResponses = agrPmtOrdersToAgrPmtOrderResponse(agrPaymentOrders);
         return  new AgrPmtOrderPageResponse(agrPmtOrderResponses);
     }
+
 }

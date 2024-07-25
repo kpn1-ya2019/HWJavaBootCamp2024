@@ -18,7 +18,7 @@ public class DepartmentRepository {
       return new ArrayList<Department>(departments);
   }
 
-  public Optional<Department> findById(Long id) {
+  public Optional<Department> findById(Integer id) {
       return departments.stream()
               .filter(department -> department.getId().equals(id))
               .findFirst();
@@ -35,7 +35,7 @@ public class DepartmentRepository {
       return deptForUpdate;
   }
 
-  public Department delete(Long id) {
+  public Department delete(Integer id) {
       Department deptForDelete = departments.stream()
                   .filter(department -> department.getId().equals(id))
                   .findFirst().get();
@@ -62,5 +62,20 @@ public class DepartmentRepository {
                 .filter(department -> department.getCode().equals(code))
                 .findFirst();
   }
+    private Integer generateIdDept() {
+        Random randomDept = new Random();
+        return randomDept.nextInt();
+    }
+  public Department generateNewDepartment(String codeDept, String nameDept) {
+        Department fndDepartment =   getByCode(codeDept);
+        if (fndDepartment == null) {
+            Integer newId = generateIdDept();
+            Department newDepartment = new Department(newId, codeDept, nameDept);
+            return save(newDepartment);
+        } else {
+            return fndDepartment;
+        }
+  }
+
 }
 

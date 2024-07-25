@@ -21,7 +21,7 @@ public class PaymentTypeController {
     public PmtTypePageResponse getAll() {return  paymentTypeService.getAll(); }
 
     @GetMapping("/{id}")
-    public PaymentTypeResponse getById(@PathVariable("id") Long id) { return paymentTypeService.getById(id); }
+    public PaymentTypeResponse getById(@PathVariable("id") Integer id) { return paymentTypeService.getById(id); }
 
     @PutMapping
     public PaymentTypeResponse update(@RequestBody UpdatePmtTypeRequest request) {return paymentTypeService.update(request); }

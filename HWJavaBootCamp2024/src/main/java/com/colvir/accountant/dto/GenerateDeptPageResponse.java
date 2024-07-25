@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class DeptPageResponse {
+public class GenerateDeptPageResponse {
 
-    private List<DepartmentResponse> allDepartments;
+    private List<GenerateDeptResponse> allDepartments;
 
 }

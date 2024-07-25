@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AgrPaymentOrder {
     //Сущность: агрегат зарплаты платы (кому, сумма, дата перечисления)
-    private Long    id;
+    private Integer    id;
     private String  paymentTypeName;
     private String  departmentCode;
     private String  departmentName;

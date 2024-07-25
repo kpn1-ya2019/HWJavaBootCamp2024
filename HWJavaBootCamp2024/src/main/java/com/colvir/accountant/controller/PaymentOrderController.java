@@ -21,7 +21,7 @@ public class PaymentOrderController {
     public PmtOrderPageResponse getAll() {return  paymentOrderService.getAll(); }
 
     @GetMapping("/{id}")
-    public PaymentOrderResponse getById(@PathVariable("id") Long id) { return paymentOrderService.getById(id); }
+    public PaymentOrderResponse getById(@PathVariable("id") Integer id) { return paymentOrderService.getById(id); }
 
     @PutMapping
     public PaymentOrderResponse update(@RequestBody UpdatePmtOrderRequest request) {return paymentOrderService.update(request); }

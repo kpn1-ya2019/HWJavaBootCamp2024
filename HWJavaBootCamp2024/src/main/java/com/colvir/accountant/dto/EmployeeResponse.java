@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class EmployeeResponse {
 
-    private Long   id;
-    private Long   idDepartment;
+    private Integer   id;
+    private Integer   idDepartment;
     private String surname;
     private String name;
     private String patronymic;

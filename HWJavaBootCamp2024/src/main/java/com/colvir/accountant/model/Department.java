@@ -1,6 +1,5 @@
 package com.colvir.accountant.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Department {
     //сущность
-    private Long   id;
+    private Integer   id;
 
     private String code;
 

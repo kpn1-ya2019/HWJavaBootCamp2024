@@ -15,7 +15,7 @@ public class EmployeeRepository {
     public List<Employee> findAll() {
         return new ArrayList<>(employees);
     }
-    public Optional<Employee> findByIdAndIdDept(Long id, Long idDepartment) {
+    public Optional<Employee> findByIdAndIdDept(Integer id, Integer idDepartment) {
         return employees.stream()
                 .filter(employee -> employee.getId().equals(id) &&
                         employee.getIdDepartment().equals(idDepartment))
@@ -35,7 +35,7 @@ public class EmployeeRepository {
         }
         return empForUpdate;
     }
-    public Employee delete(Long id, Long idDepartment) {
+    public Employee delete(Integer id, Integer idDepartment) {
         Employee empForDelete = employees.stream()
                 .filter(employee -> employee.getId().equals(id) &&
                         employee.getIdDepartment().equals(idDepartment))
@@ -56,4 +56,23 @@ public class EmployeeRepository {
     public Employee getBySrNamePatNm(String empSurname, String empPatronymic, String empName) {
         return getByNmPatSrName(empName, empPatronymic, empSurname);
     }
+
+    public  Integer generateIdEmp() {
+        Random randomIdEmp = new Random();
+        return randomIdEmp.nextInt();
+    }
+
+    public Employee generateNewEmployee(Integer empIdDepartment, String empSurname, String empPatronymic, String empName, Double empSalary){
+        Employee fndEmployee =   getByNmPatSrName(empName, empPatronymic, empSurname);
+        if (fndEmployee == null) {
+            Integer newId = generateIdEmp();
+            Employee newEmployee = new Employee(newId, empIdDepartment, empSurname, empPatronymic, empName, empSalary);
+            return save(newEmployee);
+        } else {
+            return fndEmployee;
+        }
+
+    }
+
+
 }

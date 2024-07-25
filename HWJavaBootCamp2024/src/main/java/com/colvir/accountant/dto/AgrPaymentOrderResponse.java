@@ -2,12 +2,10 @@ package com.colvir.accountant.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class AgrPaymentOrderResponse {
 
-    private Long    id;
+    private Integer    id;
     private String  paymentTypeName;
     private String  departmentCode;
     private String  departmentName;

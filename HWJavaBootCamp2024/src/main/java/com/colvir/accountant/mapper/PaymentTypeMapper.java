@@ -3,6 +3,7 @@ package com.colvir.accountant.mapper;
 import com.colvir.accountant.dto.*;
 import com.colvir.accountant.model.PaymentType;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -16,10 +17,20 @@ public interface PaymentTypeMapper {
 
     List<PaymentTypeResponse> pmtTypesToPmtTypeResponse(List<PaymentType> paymentTypes);
 
-    PaymentType updatePmtTypeRequestToPmtType(UpdatePmtTypeRequest request);
+    default PaymentType updatePmtTypeRequestToPmtType(@MappingTarget PaymentType pmtTypeForUpdate, UpdatePmtTypeRequest request)
+    {
+        String name = request.getName();
+        if (name != null) {
+            pmtTypeForUpdate.setName(name);
+        }
+
+        return pmtTypeForUpdate;
+
+    }
 
     default PmtTypePageResponse paymentTypesToPmtTypePageResponse(List<PaymentType> paymentTypes) {
         List<PaymentTypeResponse> paymentTypeResponses = pmtTypesToPmtTypeResponse(paymentTypes);
         return  new PmtTypePageResponse(paymentTypeResponses);
     }
+
 }

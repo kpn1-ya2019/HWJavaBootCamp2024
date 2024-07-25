@@ -19,15 +19,15 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    private Random randomEmp = new Random();
+    private final Random randomEmp = new Random();
 
     public GenerateEmpResponse generateEmp(GenerateEmpRequest request) {
-        Long   idDepartment = request.getIdDepartment();
+        Integer   idDepartment = request.getIdDepartment();
         String surname = request.getSurname();
         String name = request.getName();
         String patronymic = request.getPatronymic();
         Double salary = request.getSalary();
-        Employee newEmployee = new Employee(randomEmp.nextLong(), idDepartment, surname, name, patronymic, salary);
+        Employee newEmployee = new Employee(randomEmp.nextInt(), idDepartment, surname, name, patronymic, salary);
         employeeRepository.save(newEmployee);
         return  employeeMapper.empToGenerateEmpResponse(newEmployee);
     }
@@ -37,15 +37,15 @@ public class EmployeeService {
         return employeeMapper.employeesToEmpPageResponse(allEmployees);
     }
 
-    public EmployeeResponse getByIdAndIdDept(Long id, Long idDepartment) {
+    public EmployeeResponse getByIdAndIdDept(Integer id, Integer idDepartment) {
         Employee employee = employeeRepository.findByIdAndIdDept(id, idDepartment)
                 .orElseThrow(()-> new EmpNotFoundException(String.format("%s с id = %s из %s с id = %s не найден", "Сотрудник", id, "подразделения", idDepartment)));
         return employeeMapper.empToEmpResponse(employee);
     }
 
     public EmployeeResponse update(UpdateEmployeeRequest request) {
-        Long employeeId = request.getId();
-        Long employeeIdDept = request.getIdDepartment();
+        Integer employeeId = request.getId();
+        Integer employeeIdDept = request.getIdDepartment();
         Employee employee = employeeRepository.findByIdAndIdDept(employeeId, employeeIdDept)
                 .orElseThrow(() -> new EmpNotFoundException(String.format("%s с id = %s из %s с id = %s не найден", "Сотрудник", employeeId, "подразделения", employeeIdDept)));
 
@@ -56,7 +56,7 @@ public class EmployeeService {
         return employeeMapper.empToEmpResponse(updatedEmp);
     }
 
-    public EmployeeResponse delete(Long id, Long idDepartment) {
+    public EmployeeResponse delete(Integer id, Integer idDepartment) {
 
         Employee employee = employeeRepository.findByIdAndIdDept(id, idDepartment)
                 .orElseThrow(() -> new EmpNotFoundException(String.format("%s с id = %s из %s с id = %s не найден", "Сотрудник", id, "подразделения", idDepartment)));

@@ -21,7 +21,7 @@ public class DepartmentController {
     public DeptPageResponse getAll() {return  departmentService.getAll(); }
 
     @GetMapping("/{id}")
-    public DepartmentResponse getById(@PathVariable("id") Long id) { return departmentService.getById(id); }
+    public DepartmentResponse getById(@PathVariable("id") Integer id) { return departmentService.getById(id); }
     @GetMapping("/{code}")
     public DepartmentResponse getByCode(@PathVariable("code") String code) { return departmentService.getByCode(code); }
 

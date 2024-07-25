@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class GenerateEmpResponse {
 
-    private Long   idDepartment;
+    private Integer   idDepartment;
     private String surname;
     private String name;
     private String patronymic;

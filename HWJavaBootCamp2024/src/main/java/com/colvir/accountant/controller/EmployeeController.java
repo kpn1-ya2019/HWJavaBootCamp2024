@@ -21,7 +21,7 @@ public class EmployeeController {
     public EmpPageResponse getAll() {return  employeeService.getAll(); }
 
     @GetMapping("/{id}, {idDepartment}")
-    public EmployeeResponse getByIdAndIdDept(@PathVariable("id") Long id, @PathVariable("idDepartment") Long idDepartment) {
+    public EmployeeResponse getByIdAndIdDept(@PathVariable("id") Integer id, @PathVariable("idDepartment") Integer idDepartment) {
         return employeeService.getByIdAndIdDept(id, idDepartment);
     }
 

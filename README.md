@@ -8,3 +8,7 @@
 2) Сервисный слой покрыт тестами
 3) Стек: Java 17, Spring boot 3.*.*, maven, Junit, Mockito
 
+
+Проверка приложения:
+http://localhost:8080/api/swagger-ui/index.html
+Даты в формате yyyy-MM-dd

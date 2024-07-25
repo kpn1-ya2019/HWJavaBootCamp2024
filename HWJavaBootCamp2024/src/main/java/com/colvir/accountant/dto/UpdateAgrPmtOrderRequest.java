@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UpdateAgrPmtOrderRequest {
-    private Long    id;
+    private Integer    id;
     private String  paymentTypeName;
     private String  departmentCode;
     private String  departmentName;

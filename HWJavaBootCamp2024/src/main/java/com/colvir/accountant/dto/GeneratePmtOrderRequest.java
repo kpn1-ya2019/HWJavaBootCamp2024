@@ -2,14 +2,14 @@ package com.colvir.accountant.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class GeneratePmtOrderRequest {
 
-    private Long   idType;
-    private Long   idEmployee;
-    private Long   idDepartment;
-    private Date   datePayment;
+    private Integer   idType;
+    private Integer   idEmployee;
+    private Integer   idDepartment;
+    private LocalDate datePayment;
     private Double amount;
 }

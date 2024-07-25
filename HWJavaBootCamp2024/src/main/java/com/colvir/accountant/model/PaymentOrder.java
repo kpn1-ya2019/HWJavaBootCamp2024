@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class PaymentOrder {
     //Сущность: платежные поручения перевода заработной платы (кому, сумма, дата перечисления)
-    private Long   id;
-    private Long   idType;
-    private Long   idEmployee;
-    private Long   idDepartment;
-    private Date   datePayment;
+    private Integer   id;
+    private Integer   idType;
+    private Integer   idDepartment;
+    private Integer   idEmployee;
+    private LocalDate datePayment;
     private Double amount;
-
 }

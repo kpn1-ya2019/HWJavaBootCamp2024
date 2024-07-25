@@ -4,6 +4,7 @@ import com.colvir.accountant.model.AgrPaymentOrder;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class AgrPaymentOrderRepository {
@@ -17,19 +18,16 @@ public class AgrPaymentOrderRepository {
     public List<AgrPaymentOrder> findAll() {
         return new ArrayList<>(agrPaymentOrders);
     }
-    public Optional<AgrPaymentOrder> findById(Long id) {
+    public Optional<AgrPaymentOrder> findById(Integer id) {
         return agrPaymentOrders.stream()
                 .filter(agrPaymentOrder -> agrPaymentOrder.getId().equals(id))
                 .findFirst();
     }
     public List<AgrPaymentOrder>  findPmtTypeName(String pmtTypeName) {
-        return new ArrayList<>(agrPaymentOrders);
-        //todo доделать фильтр по коллекции - вернуть агрегать с фильтром по типу выплаты
-        /*
+
         return new ArrayList<>(agrPaymentOrders.stream()
-                                  .filter(agrPaymentOrder -> agrPaymentOrder.getPaymentTypeName().equals(pmtTypeName))
-                                  .findFirst());
-*/
+                .filter(agrPaymentOrder -> agrPaymentOrder.getPaymentTypeName().equals(pmtTypeName))
+                .collect(Collectors.toSet()));
     }
     public AgrPaymentOrder update(AgrPaymentOrder pmtForUpdate) {
         for (AgrPaymentOrder agrPaymentOrder : agrPaymentOrders) {
@@ -45,12 +43,17 @@ public class AgrPaymentOrderRepository {
         return pmtForUpdate;
     }
 
-    public AgrPaymentOrder delete(Long id) {
+    public AgrPaymentOrder delete(Integer id) {
         AgrPaymentOrder pmtForDelete = agrPaymentOrders.stream()
                 .filter(agrPaymentOrder -> agrPaymentOrder.getId().equals(id))
                 .findFirst().get();
         agrPaymentOrders.remove(pmtForDelete);
         return pmtForDelete;
     }
+    public Integer generateIdAgrPaymentOrder() {
+        Random randomId = new Random();
+        return randomId.nextInt();
+    }
+
 
 }
