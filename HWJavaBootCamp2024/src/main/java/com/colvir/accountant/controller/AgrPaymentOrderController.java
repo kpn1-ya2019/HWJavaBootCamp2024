@@ -38,6 +38,6 @@ public class AgrPaymentOrderController {
     @PutMapping
     public AgrPaymentOrderResponse update(@RequestBody UpdateAgrPmtOrderRequest request) {return agrPaymentOrderService.update(request); }
 
-    @DeleteMapping("/id")
-    public AgrPaymentOrderResponse delete(@RequestBody UpdateAgrPmtOrderRequest request) {return agrPaymentOrderService.update(request); }
+    @DeleteMapping("/{id}")
+    public AgrPaymentOrderResponse delete(@PathVariable Integer id) {return agrPaymentOrderService.delete(id); }
 }

@@ -28,6 +28,6 @@ public class DepartmentController {
     @PutMapping
     public DepartmentResponse update(@RequestBody UpdateDeptRequest request) {return departmentService.update(request); }
 
-    @DeleteMapping("/id")
-    public DepartmentResponse delete(@RequestBody UpdateDeptRequest request) {return departmentService.update(request); }
+    @DeleteMapping("/{id}")
+    public DepartmentResponse delete(@PathVariable Integer id) {return departmentService.delete(id); }
 }

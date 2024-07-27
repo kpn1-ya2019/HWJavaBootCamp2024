@@ -26,6 +26,6 @@ public class PaymentOrderController {
     @PutMapping
     public PaymentOrderResponse update(@RequestBody UpdatePmtOrderRequest request) {return paymentOrderService.update(request); }
 
-    @DeleteMapping("/id")
-    public PaymentOrderResponse delete(@RequestBody UpdatePmtOrderRequest request) {return paymentOrderService.update(request); }
+    @DeleteMapping("/{id}")
+    public PaymentOrderResponse delete(@PathVariable Integer id) {return paymentOrderService.delete(id); }
 }
