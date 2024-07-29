@@ -1,53 +1,80 @@
 package com.colvir.accountant.repository;
 
 import com.colvir.accountant.model.AgrPaymentOrder;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class AgrPaymentOrderRepository {
-    private final Set<AgrPaymentOrder> agrPaymentOrders = new HashSet<>();
+
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final BeanPropertyRowMapper<AgrPaymentOrder> beanPropertyRowMapper = new BeanPropertyRowMapper<>(AgrPaymentOrder.class);
 
     public AgrPaymentOrder save(AgrPaymentOrder agrPaymentOrder) {
-        agrPaymentOrders.add(agrPaymentOrder);
+        String preparedStatementString = "INSERT INTO agrpaymentorders VALUES(?, ?, ?, ?, ?, ?, ?,?);";
+        jdbcTemplate.update(preparedStatementString, agrPaymentOrder.getId(),
+                                                     agrPaymentOrder.getPaymentTypeName(),
+                                                     agrPaymentOrder.getDepartmentCode(),
+                                                     agrPaymentOrder.getDepartmentName(),
+                                                     agrPaymentOrder.getEmployeeSurname(),
+                                                     agrPaymentOrder.getEmployeeName(),
+                                                     agrPaymentOrder.getEmployeePatronymic(),
+                                                     agrPaymentOrder.getAmountPaymentOrder());
         return agrPaymentOrder;
     }
 
     public List<AgrPaymentOrder> findAll() {
-        return new ArrayList<>(agrPaymentOrders);
+        String statementString = "SELECT * FROM agrpaymentorders";
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+
     }
     public Optional<AgrPaymentOrder> findById(Integer id) {
-        return agrPaymentOrders.stream()
-                .filter(agrPaymentOrder -> agrPaymentOrder.getId().equals(id))
-                .findFirst();
+        String statementString = "SELECT * FROM agrpaymentorders WHERE ID = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
     }
     public List<AgrPaymentOrder>  findPmtTypeName(String pmtTypeName) {
 
-        return new ArrayList<>(agrPaymentOrders.stream()
-                .filter(agrPaymentOrder -> agrPaymentOrder.getPaymentTypeName().equals(pmtTypeName))
-                .collect(Collectors.toSet()));
+        String statementString = "SELECT * FROM agrpaymentorders WHERE paymenttypename = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{pmtTypeName});
     }
     public AgrPaymentOrder update(AgrPaymentOrder pmtForUpdate) {
-        for (AgrPaymentOrder agrPaymentOrder : agrPaymentOrders) {
-            if (agrPaymentOrder.getId().equals(pmtForUpdate.getId())) {
-                agrPaymentOrder.setPaymentTypeName(pmtForUpdate.getPaymentTypeName());
-                agrPaymentOrder.setDepartmentCode(pmtForUpdate.getDepartmentCode());
-                agrPaymentOrder.setDepartmentName(pmtForUpdate.getDepartmentName());
-                agrPaymentOrder.setEmployeeSurname(pmtForUpdate.getEmployeeSurname());
-                agrPaymentOrder.setEmployeeName(pmtForUpdate.getEmployeeName());
-                agrPaymentOrder.setEmployeePatronymic(pmtForUpdate.getEmployeePatronymic());
-            }
-        }
+        String statementString =
+                "UPDATE agrpaymentorders SET " +
+                        "paymentTypeName = ?, " +
+                        "departmentCode      = ?, " +
+                        "departmentName      = ?, " +
+                        "employeeSurname     = ?, " +
+                        "employeeName        = ?, " +
+                        "employeePatronymic  = ?, " +
+                        "amountPaymentOrder  = ? " +
+                      "WHERE id = ?";
+
+        jdbcTemplate.update(statementString,
+                pmtForUpdate.getPaymentTypeName(),
+                pmtForUpdate.getDepartmentCode(),
+                pmtForUpdate.getDepartmentName(),
+                pmtForUpdate.getEmployeeSurname(),
+                pmtForUpdate.getEmployeeName(),
+                pmtForUpdate.getEmployeePatronymic(),
+                pmtForUpdate.getAmountPaymentOrder(),
+                pmtForUpdate.getId()
+        );
+
         return pmtForUpdate;
     }
 
     public AgrPaymentOrder delete(Integer id) {
-        AgrPaymentOrder pmtForDelete = agrPaymentOrders.stream()
-                .filter(agrPaymentOrder -> agrPaymentOrder.getId().equals(id))
-                .findFirst().get();
-        agrPaymentOrders.remove(pmtForDelete);
+
+        AgrPaymentOrder pmtForDelete = findById(id).get();
+
+        String statementString = "DELETE FROM agrpaymentorders WHERE id = ?";
+
+        jdbcTemplate.update(statementString, id);
         return pmtForDelete;
     }
     public Integer generateIdAgrPaymentOrder() {

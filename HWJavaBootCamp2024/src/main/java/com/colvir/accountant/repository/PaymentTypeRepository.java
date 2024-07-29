@@ -1,13 +1,17 @@
 package com.colvir.accountant.repository;
 
 import com.colvir.accountant.model.PaymentType;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
 public class PaymentTypeRepository {
-    private final Set<PaymentType> paymentTypes = new HashSet<>();
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final BeanPropertyRowMapper<PaymentType> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentType.class);
+
 
     public  Integer generateIdPmtType() {
         //Генерация в репо https://habr.com/ru/articles/709848/
@@ -16,40 +20,48 @@ public class PaymentTypeRepository {
     }
 
     public PaymentType save(PaymentType paymentType) {
-        paymentTypes.add(paymentType);
+        String preparedStatementString = "INSERT INTO paymenttypes VALUES(?, ?, ?);";
+        jdbcTemplate.update(preparedStatementString, paymentType.getId(), paymentType.getName());
         return paymentType;
     }
 
     public List<PaymentType> findAll() {
-        return new ArrayList<>(paymentTypes);
+
+        String statementString = "SELECT * FROM paymenttypes";
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+
     }
     public Optional<PaymentType> findById(Integer id) {
-        return paymentTypes.stream()
-                .filter(paymentType -> paymentType.getId().equals(id))
-                .findFirst();
+        String statementString = "SELECT * FROM paymenttypes WHERE ID = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
     }
 
     public PaymentType update(PaymentType pmtForUpdate) {
-        for (PaymentType paymentType : paymentTypes) {
-            if (paymentType.getId().equals(pmtForUpdate.getId())) {
-                paymentType.setName(pmtForUpdate.getName());
-            }
-        }
+
+        String statementString = "UPDATE paymenttypes SET name = ? WHERE id = ?";
+
+        jdbcTemplate.update(statementString, pmtForUpdate.getName(), pmtForUpdate.getId());
+
         return pmtForUpdate;
     }
 
     public PaymentType delete(Integer id) {
-        PaymentType pmtForDelete = paymentTypes.stream()
-                .filter(paymentType -> paymentType.getId().equals(id))
-                .findFirst().get();
-        paymentTypes.remove(pmtForDelete);
+
+        PaymentType pmtForDelete = findById(id).get();
+
+        String statementString = "DELETE FROM paymenttypes WHERE id = ?";
+
+        jdbcTemplate.update(statementString, id);
+
         return pmtForDelete;
     }
     public PaymentType getByName(String pmtTypeName) {
-        return paymentTypes.stream()
-                .filter(paymentType -> paymentType.getName().equals(pmtTypeName))
-                .findFirst()
-                .orElse(null);
+        String statementString = "SELECT * FROM paymenttypes WHERE name = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, pmtTypeName).stream()
+                .findFirst().get();
+
     }
     public PaymentType generateNewPaymentType(String pmtTypeName) {
         PaymentType fndPaymentType =   getByName(pmtTypeName);
@@ -62,13 +74,11 @@ public class PaymentTypeRepository {
         }
     }
 
-    public String getName(PaymentType paymentType) {
-        return paymentType.getName();
-    }
     public PaymentType getById(Integer idPmtType) {
-        return paymentTypes.stream()
-                .filter(paymentType -> paymentType.getId().equals(idPmtType))
-                .findFirst()
-                .orElse(null);
+
+        String statementString = "SELECT * FROM paymenttypes WHERE id = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, idPmtType).stream()
+                .findFirst().get();
     }
 }

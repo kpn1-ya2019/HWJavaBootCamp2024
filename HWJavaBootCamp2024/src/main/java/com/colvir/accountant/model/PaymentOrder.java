@@ -17,5 +17,5 @@ public class PaymentOrder {
     private Integer   idDepartment;
     private Integer   idEmployee;
     private LocalDate datePayment;
-    private Double amount;
+    private Double    amount;
 }

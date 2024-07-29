@@ -1,6 +1,8 @@
 package com.colvir.accountant.repository;
 
 import com.colvir.accountant.model.PaymentOrder;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -9,40 +11,59 @@ import java.util.*;
 
 @Repository
 public class PaymentOrderRepository {
-    private final Set<PaymentOrder> paymentOrders = new HashSet<>();
+
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final BeanPropertyRowMapper<PaymentOrder> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentOrder.class);
 
     public PaymentOrder save(PaymentOrder paymentOrder) {
-        paymentOrders.add(paymentOrder);
+
+        String preparedStatementString = "INSERT INTO paymentorders VALUES(?, ?, ?, ?, ?, ?);";
+        jdbcTemplate.update(preparedStatementString, paymentOrder.getId(), paymentOrder.getIdType(), paymentOrder.getIdDepartment(),
+                paymentOrder.getIdEmployee(), paymentOrder.getDatePayment(), paymentOrder.getAmount());
+
         return paymentOrder;
     }
 
     public List<PaymentOrder> findAll() {
-        return new ArrayList<>(paymentOrders);
+        String statementString = "SELECT * FROM paymentorders";
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
     }
 
     public Optional<PaymentOrder> findById(Integer id) {
-        return paymentOrders.stream()
-                .filter(paymentOrder -> paymentOrder.getId().equals(id))
-                .findFirst();
+        String statementString = "SELECT * FROM paymentorders WHERE ID = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
     }
 
     public PaymentOrder update(PaymentOrder pmtForUpdate) {
-        for (PaymentOrder paymentOrder : paymentOrders) {
-            if (paymentOrder.getId().equals(pmtForUpdate.getId())) {
-                paymentOrder.setIdType(pmtForUpdate.getIdType());
-                paymentOrder.setIdEmployee(pmtForUpdate.getIdEmployee());
-                paymentOrder.setDatePayment(pmtForUpdate.getDatePayment());
-                paymentOrder.setAmount(pmtForUpdate.getAmount());
-            }
-        }
+
+            String statementString = "UPDATE paymentorders SET  " +
+                    "idtype = ?," +
+                    "iddepartment = ?," +
+                    "idemployee = ?," +
+                    "datepayment = ?," +
+                    "amount = ?" +
+                    "WHERE id = ?";
+
+            jdbcTemplate.update(statementString,
+                    pmtForUpdate.getIdType(),
+                    pmtForUpdate.getIdDepartment(),
+                    pmtForUpdate.getIdEmployee(),
+                    pmtForUpdate.getDatePayment(),
+                    pmtForUpdate.getAmount(),
+                    pmtForUpdate.getId());
+
+
         return pmtForUpdate;
     }
 
     public PaymentOrder delete(Integer id) {
-        PaymentOrder pmtForDelete = paymentOrders.stream()
-                .filter(paymentOrder -> paymentOrder.getId().equals(id))
-                .findFirst().get();
-        paymentOrders.remove(pmtForDelete);
+        PaymentOrder pmtForDelete = findById(id).get();
+
+        String statementString = "DELETE FROM paymentorders WHERE id = ?";
+
+        jdbcTemplate.update(statementString, id);
+
         return pmtForDelete;
     }
 
@@ -51,16 +72,23 @@ public class PaymentOrderRepository {
                                      Integer   pmtOrderIdEmployee,
                                      LocalDate   pmtOrderDatePayment,
                                      Double pmtOrderAmount) {
-        return paymentOrders.stream()
-                .filter(paymentOrder ->  (
-                        paymentOrder.getIdType().equals(pmtOrderIdType)            &&
-                        paymentOrder.getIdDepartment().equals(pmtOrderIdDepartment) &&
-                        paymentOrder.getIdEmployee().equals(pmtOrderIdEmployee) )  &&
-                        paymentOrder.getDatePayment().equals(pmtOrderDatePayment)  &&
-                        String.format("%.2f",paymentOrder.getAmount()) == String.format("%.2f",pmtOrderAmount)
-                )
-                .findFirst()
-                .orElse(null);
+
+        String statementString = "SELECT * FROM paymentorders WHERE "+
+                "idtype = ?," +
+                "iddepartment = ?," +
+                "idemployee = ?," +
+                "datepayment = ?," +
+                "amount = ?";
+
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper,
+                        pmtOrderIdType,
+                        pmtOrderIdDepartment,
+                        pmtOrderIdEmployee,
+                        pmtOrderDatePayment,
+                        pmtOrderAmount).stream()
+                .findFirst().get() ;
+
+
     }
 
     public  Integer generateIdPaymentOrder() {
@@ -88,11 +116,8 @@ public class PaymentOrderRepository {
         LocalDate parsingDate ;
         try {
             parsingDate = LocalDate.parse(stringPayDate);
-            System.out.println(parsingDate);
         }catch (DateTimeParseException e) {
             parsingDate = null;
-            System.out.println("Нераспаршена с помощью " + e.getParsedString());
-            System.out.println("Ошибка " + e.getMessage());
         }
         return parsingDate;
     }
