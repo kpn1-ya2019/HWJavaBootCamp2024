@@ -3,6 +3,7 @@ package com.colvir.accountant.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 
 public class PaymentOrder {
     //Сущность: платежные поручения перевода заработной платы (кому, сумма, дата перечисления)
+    @Id
     private Integer   id;
     private Integer   idType;
     private Integer   idDepartment;

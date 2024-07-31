@@ -3,12 +3,14 @@ package com.colvir.accountant.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AgrPaymentOrder {
-    //Сущность: агрегат зарплаты платы (кому, сумма, дата перечисления)
+    //Сущность: агрегат зарплаты платы (кому, сумма)
+    @Id
     private Integer    id;
     private String  paymentTypeName;
     private String  departmentCode;
