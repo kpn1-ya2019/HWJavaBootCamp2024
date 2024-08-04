@@ -1,11 +1,24 @@
 package com.colvir.accountant.controller;
 
-import com.colvir.accountant.dto.*;
-import com.colvir.accountant.service.AgrPaymentOrderService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.colvir.accountant.dto.AgrPaymentOrderResponse;
+import com.colvir.accountant.dto.AgrPmtOrderPageResponse;
+import com.colvir.accountant.dto.GenerateAgrPmtOrderRequest;
+import com.colvir.accountant.dto.GenerateAgrPmtOrderResponse;
+import com.colvir.accountant.dto.UpdateAgrPmtOrderRequest;
+import com.colvir.accountant.service.AgrPaymentOrderService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("agrPaymentOrder")
@@ -29,10 +42,10 @@ public class AgrPaymentOrderController {
     @GetMapping
     public AgrPmtOrderPageResponse getAll() {return  agrPaymentOrderService.getAll(); }
 
-    @GetMapping("/{pmtTypeName}")
+    @GetMapping("paymentTypeName/{pmtTypeName}")
     public AgrPmtOrderPageResponse getByPmtTypeName(@PathVariable("pmtTypeName") String pmtTypeName) { return agrPaymentOrderService.getByPmtTypeName(pmtTypeName); }
 
-    @GetMapping("/{id}")
+    @GetMapping("id/{id}")
     public AgrPaymentOrderResponse getById(@PathVariable("id") Integer id) { return agrPaymentOrderService.getById(id); }
 
     @PutMapping

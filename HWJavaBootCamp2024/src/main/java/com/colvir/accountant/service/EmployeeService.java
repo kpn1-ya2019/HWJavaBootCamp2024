@@ -1,15 +1,20 @@
 package com.colvir.accountant.service;
 
-import com.colvir.accountant.dto.*;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.colvir.accountant.dto.EmpPageResponse;
+import com.colvir.accountant.dto.EmployeeResponse;
+import com.colvir.accountant.dto.GenerateEmpRequest;
+import com.colvir.accountant.dto.GenerateEmpResponse;
+import com.colvir.accountant.dto.UpdateEmployeeRequest;
 import com.colvir.accountant.exception.EmpNotFoundException;
 import com.colvir.accountant.mapper.EmployeeMapper;
 import com.colvir.accountant.model.Employee;
 import com.colvir.accountant.repository.EmployeeRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Random;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -19,15 +24,14 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    private final Random randomEmp = new Random();
-
     public GenerateEmpResponse generateEmp(GenerateEmpRequest request) {
+        Integer   newId = employeeRepository.generateIdEmp();
         Integer   idDepartment = request.getIdDepartment();
         String surname = request.getSurname();
         String name = request.getName();
         String patronymic = request.getPatronymic();
         Double salary = request.getSalary();
-        Employee newEmployee = new Employee(randomEmp.nextInt(), idDepartment, surname, name, patronymic, salary);
+        Employee newEmployee = new Employee(newId, idDepartment, surname, name, patronymic, salary);
         employeeRepository.save(newEmployee);
         return  employeeMapper.empToGenerateEmpResponse(newEmployee);
     }

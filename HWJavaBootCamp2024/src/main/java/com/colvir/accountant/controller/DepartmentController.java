@@ -1,9 +1,22 @@
 package com.colvir.accountant.controller;
 
-import com.colvir.accountant.dto.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.colvir.accountant.dto.DepartmentResponse;
+import com.colvir.accountant.dto.DeptPageResponse;
+import com.colvir.accountant.dto.GenerateDeptRequest;
+import com.colvir.accountant.dto.GenerateDeptResponse;
+import com.colvir.accountant.dto.UpdateDeptRequest;
 import com.colvir.accountant.service.DepartmentService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("department")
@@ -20,10 +33,15 @@ public class DepartmentController {
     @GetMapping
     public DeptPageResponse getAll() {return  departmentService.getAll(); }
 
-    @GetMapping("/{id}")
-    public DepartmentResponse getById(@PathVariable("id") Integer id) { return departmentService.getById(id); }
-    @GetMapping("/{code}")
-    public DepartmentResponse getByCode(@PathVariable("code") String code) { return departmentService.getByCode(code); }
+    @GetMapping("id/{id}")
+    public DepartmentResponse getById(@PathVariable("id") Integer id) { 
+        return departmentService.getById(id); 
+    }
+
+    @GetMapping("code/{code}")
+    public DepartmentResponse getByCode(@PathVariable String code) { 
+        return departmentService.getByCode(code); 
+    }
 
     @PutMapping
     public DepartmentResponse update(@RequestBody UpdateDeptRequest request) {return departmentService.update(request); }

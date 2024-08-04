@@ -1,15 +1,23 @@
 package com.colvir.accountant.repository;
 
-import com.colvir.accountant.model.Department;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import com.colvir.accountant.model.Department;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
+@RequiredArgsConstructor
 public class DepartmentRepository {
-  private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+  private final JdbcTemplate jdbcTemplate;
+
   private final BeanPropertyRowMapper<Department> beanPropertyRowMapper = new BeanPropertyRowMapper<>(Department.class);
 
   public Department save(Department department) {
@@ -78,12 +86,30 @@ public class DepartmentRepository {
       return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{code}).stream().findFirst();
 
   }
-    private Integer generateIdDept() {
-        Random randomDept = new Random();
-        return randomDept.nextInt();
+  public Integer generateIdDept() {
+            Integer id = jdbcTemplate.query("SELECT nextval('department_seq')",
+                    rs -> {
+                        if (rs.next()) {
+                            return rs.getInt(1);
+                        } else {
+                            throw new SQLException("Unable to retrieve value from sequence department_seq.");
+                        }
+                    });
+
+        return id;
     }
   public Department generateNewDepartment(String codeDept, String nameDept) {
-        Department fndDepartment =   getByCode(codeDept);
+        Department fndDepartment;
+
+        try {
+            String statementString = "SELECT * FROM departments WHERE code = ?";
+
+            fndDepartment = jdbcTemplate.queryForObject(statementString, beanPropertyRowMapper, codeDept);
+        
+        } catch (EmptyResultDataAccessException e) {
+            fndDepartment = null;
+        }
+  
         if (fndDepartment == null) {
             Integer newId = generateIdDept();
             Department newDepartment = new Department(newId, codeDept, nameDept);

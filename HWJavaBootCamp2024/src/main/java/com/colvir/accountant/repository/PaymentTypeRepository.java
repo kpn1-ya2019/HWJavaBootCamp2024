@@ -1,26 +1,41 @@
 package com.colvir.accountant.repository;
 
-import com.colvir.accountant.model.PaymentType;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import com.colvir.accountant.model.PaymentType;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
+@RequiredArgsConstructor
 public class PaymentTypeRepository {
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final JdbcTemplate jdbcTemplate;
     private final BeanPropertyRowMapper<PaymentType> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentType.class);
 
 
     public  Integer generateIdPmtType() {
-        //Генерация в репо https://habr.com/ru/articles/709848/
-        Random randomPmtType = new Random();
-        return randomPmtType.nextInt();
+            Integer id = jdbcTemplate.query("SELECT nextval('paymenttype_seq')",
+                    rs -> {
+                        if (rs.next()) {
+                            return rs.getInt(1);
+                        } else {
+                            throw new SQLException("Unable to retrieve value from sequence paymenttype_seq.");
+                        }
+                    });
+
+        return id;
     }
 
     public PaymentType save(PaymentType paymentType) {
-        String preparedStatementString = "INSERT INTO paymenttypes VALUES(?, ?, ?);";
+        String preparedStatementString = "INSERT INTO paymenttypes VALUES(?, ?);";
         jdbcTemplate.update(preparedStatementString, paymentType.getId(), paymentType.getName());
         return paymentType;
     }
@@ -64,7 +79,19 @@ public class PaymentTypeRepository {
 
     }
     public PaymentType generateNewPaymentType(String pmtTypeName) {
-        PaymentType fndPaymentType =   getByName(pmtTypeName);
+        PaymentType fndPaymentType;
+        RowMapper<PaymentType> paymentTypeRowMapper = (rs, rowNum)-> 
+        new PaymentType(rs.getInt("ID"),rs.getString("NAME"));
+        try {
+            String statementString = "SELECT * FROM paymenttypes WHERE name = ?";
+
+            fndPaymentType =  jdbcTemplate.queryForObject(statementString, paymentTypeRowMapper, pmtTypeName);
+    
+            //fndPaymentType =   getByName(pmtTypeName);
+        } catch (EmptyResultDataAccessException e) {
+            fndPaymentType = null;
+        }
+
         if (fndPaymentType == null) {
             Integer newId = generateIdPmtType();
             PaymentType newPaymentType = new PaymentType(newId, pmtTypeName);

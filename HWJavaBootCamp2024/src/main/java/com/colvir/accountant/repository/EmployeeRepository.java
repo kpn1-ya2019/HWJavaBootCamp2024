@@ -1,15 +1,22 @@
 package com.colvir.accountant.repository;
 
-import com.colvir.accountant.model.Employee;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import com.colvir.accountant.model.Employee;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
+@RequiredArgsConstructor
 public class EmployeeRepository {
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final JdbcTemplate jdbcTemplate;
     private final BeanPropertyRowMapper<Employee> beanPropertyRowMapper = new BeanPropertyRowMapper<>(Employee.class);
 
     public Employee save(Employee employee) {
@@ -33,7 +40,7 @@ public class EmployeeRepository {
     public Optional<Employee> findByIdAndIdDept(Integer id, Integer idDepartment) {
 
         String statementString = "SELECT * FROM employees WHERE id = ? AND iddepartment = ?";
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}, new Object[]{idDepartment}).stream().findFirst();
+        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id, idDepartment}).stream().findFirst();
     }
 
     // Сотрудник может работать по совместительству в нескольких подразделениях
@@ -58,7 +65,7 @@ public class EmployeeRepository {
 
     public Employee getByNmPatSrName(String empName, String empPatronymic, String empSurname) {
 
-        String statementString = "SELECT * FROM employees WHERE surname= ?, name= ?, patronymic= ?";
+        String statementString = "SELECT * FROM employees WHERE surname= ? AND name= ? AND patronymic= ?";
 
         return jdbcTemplate.query(statementString, beanPropertyRowMapper, empSurname, empName, empPatronymic).stream()
                 .findFirst().get();
@@ -69,12 +76,29 @@ public class EmployeeRepository {
     }
 
     public  Integer generateIdEmp() {
-        Random randomIdEmp = new Random();
-        return randomIdEmp.nextInt();
+            Integer id = jdbcTemplate.query("SELECT nextval('employee_seq')",
+                    rs -> {
+                        if (rs.next()) {
+                            return rs.getInt(1);
+                        } else {
+                            throw new SQLException("Unable to retrieve value from sequence employee_seq.");
+                        }
+                    });
+
+        return id;
     }
 
     public Employee generateNewEmployee(Integer empIdDepartment, String empSurname, String empPatronymic, String empName, Double empSalary){
-        Employee fndEmployee =   getByNmPatSrName(empName, empPatronymic, empSurname);
+        Employee fndEmployee;
+        try {
+            String statementString = "SELECT * FROM employees WHERE surname= ? AND name= ? AND patronymic= ?";
+
+            fndEmployee = jdbcTemplate.queryForObject(statementString, beanPropertyRowMapper, empSurname, empName, empPatronymic);
+        
+        } catch (EmptyResultDataAccessException e) {
+            fndEmployee = null;
+        }
+
         if (fndEmployee == null) {
             Integer newId = generateIdEmp();
             Employee newEmployee = new Employee(newId, empIdDepartment, empSurname, empPatronymic, empName, empSalary);

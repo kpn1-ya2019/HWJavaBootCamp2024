@@ -1,23 +1,30 @@
 package com.colvir.accountant.repository;
 
-import com.colvir.accountant.model.PaymentOrder;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.*;
+import com.colvir.accountant.model.PaymentOrder;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
+@RequiredArgsConstructor
 public class PaymentOrderRepository {
 
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private final JdbcTemplate jdbcTemplate;
     private final BeanPropertyRowMapper<PaymentOrder> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentOrder.class);
 
     public PaymentOrder save(PaymentOrder paymentOrder) {
 
-        String preparedStatementString = "INSERT INTO paymentorders VALUES(?, ?, ?, ?, ?, ?);";
+        String preparedStatementString = "INSERT INTO paymentorders(id, idtype, iddepartment, idemployee, datepayment, amount ) VALUES(?, ?, ?, ?, ?, ?);";
         jdbcTemplate.update(preparedStatementString, paymentOrder.getId(), paymentOrder.getIdType(), paymentOrder.getIdDepartment(),
                 paymentOrder.getIdEmployee(), paymentOrder.getDatePayment(), paymentOrder.getAmount());
 
@@ -38,12 +45,12 @@ public class PaymentOrderRepository {
     public PaymentOrder update(PaymentOrder pmtForUpdate) {
 
             String statementString = "UPDATE paymentorders SET  " +
-                    "idtype = ?," +
-                    "iddepartment = ?," +
-                    "idemployee = ?," +
-                    "datepayment = ?," +
-                    "amount = ?" +
-                    "WHERE id = ?";
+                    "idtype = ?, " +
+                    "iddepartment = ?, " +
+                    "idemployee = ?, " +
+                    "datepayment = ?, " +
+                    "amount = ? " +
+                    "WHERE id = ? ";
 
             jdbcTemplate.update(statementString,
                     pmtForUpdate.getIdType(),
@@ -66,34 +73,17 @@ public class PaymentOrderRepository {
 
         return pmtForDelete;
     }
-
-    public PaymentOrder getByAllFld( Integer   pmtOrderIdType,
-                                     Integer   pmtOrderIdDepartment,
-                                     Integer   pmtOrderIdEmployee,
-                                     LocalDate   pmtOrderDatePayment,
-                                     Double pmtOrderAmount) {
-
-        String statementString = "SELECT * FROM paymentorders WHERE "+
-                "idtype = ?," +
-                "iddepartment = ?," +
-                "idemployee = ?," +
-                "datepayment = ?," +
-                "amount = ?";
-
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper,
-                        pmtOrderIdType,
-                        pmtOrderIdDepartment,
-                        pmtOrderIdEmployee,
-                        pmtOrderDatePayment,
-                        pmtOrderAmount).stream()
-                .findFirst().get() ;
-
-
-    }
-
     public  Integer generateIdPaymentOrder() {
-        Random randomPaymentOrder = new Random();
-        return randomPaymentOrder.nextInt();
+            Integer id = jdbcTemplate.query("SELECT nextval('paymentorder_seq')",
+                    rs -> {
+                        if (rs.next()) {
+                            return rs.getInt(1);
+                        } else {
+                            throw new SQLException("Unable to retrieve value from sequence paymentorder_seq.");
+                        }
+                    });
+
+        return id;
     }
     public PaymentOrder generateNewPaymentOrder( Integer   pmtOrderIdType,
                                                  Integer   pmtOrderIdDepartment,
@@ -102,7 +92,26 @@ public class PaymentOrderRepository {
                                                  Double pmtOrderAmount
                                                  ) {
 
-        PaymentOrder fndPaymentOrder=   getByAllFld(pmtOrderIdType, pmtOrderIdDepartment, pmtOrderIdEmployee, pmtOrderDatePayment, pmtOrderAmount);
+        PaymentOrder fndPaymentOrder;
+        try {
+            String statementString = "SELECT * FROM paymentorders WHERE "+
+            "idtype = ? AND " +
+            "iddepartment = ? AND " +
+            "idemployee = ? AND " +
+            "datepayment = ? AND " +
+            "amount = ? ";
+
+            fndPaymentOrder =  jdbcTemplate.queryForObject(statementString, beanPropertyRowMapper,
+                    pmtOrderIdType,
+                    pmtOrderIdDepartment,
+                    pmtOrderIdEmployee,
+                    pmtOrderDatePayment,
+                    pmtOrderAmount);
+
+        } catch (EmptyResultDataAccessException e) {
+            fndPaymentOrder = null;
+        }
+
         if (fndPaymentOrder == null) {
             Integer newId = generateIdPaymentOrder();
             PaymentOrder newPaymentOrder = new PaymentOrder(newId, pmtOrderIdType, pmtOrderIdDepartment, pmtOrderIdEmployee, pmtOrderDatePayment, pmtOrderAmount);
