@@ -1,12 +1,12 @@
 package com.colvir.accountant.repository;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.Department;
@@ -14,105 +14,109 @@ import com.colvir.accountant.model.Department;
 import lombok.RequiredArgsConstructor;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class DepartmentRepository {
-  private final JdbcTemplate jdbcTemplate;
 
-  private final BeanPropertyRowMapper<Department> beanPropertyRowMapper = new BeanPropertyRowMapper<>(Department.class);
+    private final SessionFactory sessionFactory;
 
   public Department save(Department department) {
 
-      String preparedStatementString = "INSERT INTO departments VALUES(?, ?, ?);";
-      jdbcTemplate.update(preparedStatementString, department.getId(), department.getCode(), department.getName());
+      Session session = sessionFactory.getCurrentSession();
+      session.persist(department);
       return department;
   }
 
   public List<Department> findAll() {
 
-      String statementString = "SELECT * FROM departments";
-      return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+      Session session = sessionFactory.getCurrentSession();
+
+      return session.createQuery("select d from Department d", Department.class)
+              .getResultList();
 
   }
 
   public Optional<Department> findById(Integer id) {
-      String statementString = "SELECT * FROM departments WHERE ID = ?";
 
-      return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
+      Session session = sessionFactory.getCurrentSession();
 
+      return session.createQuery("select d from Department d where d.id = :id", Department.class)
+              .setParameter("id", id)
+              .getResultList().stream().findFirst();
   }
 
-  public Department update(Department deptForUpdate) {
+  public Department update(Department updatedDept) {
 
-      String statementString = "UPDATE departments SET code = ?, name = ? WHERE id = ?";
 
-      jdbcTemplate.update(statementString, deptForUpdate.getCode(), deptForUpdate.getName(), deptForUpdate.getId());
+      Session session = sessionFactory.getCurrentSession();
 
-      return deptForUpdate;
+      Department deptForUpdate = session.get(Department.class, updatedDept.getId());
+
+      deptForUpdate.setCode(updatedDept.getCode());
+      deptForUpdate.setName(updatedDept.getName());
+
+      return updatedDept;
   }
 
   public Department delete(Integer id) {
 
-      Department deptForDelete = findById(id).get();
+      Session session = sessionFactory.getCurrentSession();
 
-      String statementString = "DELETE FROM departments WHERE id = ?";
+      Department deptForDelete = session.get(Department.class, id);
 
-      jdbcTemplate.update(statementString, id);
-
+      session.remove(deptForDelete);
 
       return deptForDelete;
   }
 
   public Department getByCode(String deptCode) {
 
-      String statementString = "SELECT * FROM departments WHERE code = ?";
+      Session session = sessionFactory.getCurrentSession();
 
-      return jdbcTemplate.query(statementString, beanPropertyRowMapper, deptCode).stream()
-              .findFirst().get();
+      return session.createQuery("select d from Department d where d.code = :deptCode", Department.class)
+              .setParameter("deptCode", deptCode)
+              .getResultList().stream().findFirst().get();
+
   }
 
   public Department getByName(String deptName) {
 
-      String statementString = "SELECT * FROM departments WHERE name = ?";
 
-      return jdbcTemplate.query(statementString, beanPropertyRowMapper, deptName).stream()
-              .findFirst().get();
+      Session session = sessionFactory.getCurrentSession();
 
-  }
-
-  public Optional<Department> findByCode(String code) {
-
-      String statementString = "SELECT * FROM departments WHERE code = ?";
-
-      return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{code}).stream().findFirst();
+      return session.createQuery("select d from Department d where d.name = :deptName", Department.class)
+              .setParameter("deptName", deptName)
+              .getResultList().stream().findFirst().get();
 
   }
-  public Integer generateIdDept() {
-            Integer id = jdbcTemplate.query("SELECT nextval('department_seq')",
-                    rs -> {
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        } else {
-                            throw new SQLException("Unable to retrieve value from sequence department_seq.");
-                        }
-                    });
 
-        return id;
-    }
-  public Department generateNewDepartment(String codeDept, String nameDept) {
+  public Optional<Department> findByCode(String deptCode) {
+
+      Session session = sessionFactory.getCurrentSession();
+
+      return session.createQuery("select d from Department d where d.code = :deptCode", Department.class)
+              .setParameter("deptCode", deptCode)
+              .getResultList().stream().findFirst();
+
+  }
+  public Department generateNewDepartment(String deptCode, String deptName) {
+
         Department fndDepartment;
 
-        try {
-            String statementString = "SELECT * FROM departments WHERE code = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-            fndDepartment = jdbcTemplate.queryForObject(statementString, beanPropertyRowMapper, codeDept);
-        
+      try {
+          fndDepartment = session.createQuery("select d from Department d where d.code = :deptCode", Department.class)
+                  .setParameter("deptCode", deptCode)
+                  .getResultList().stream().findFirst().get();
+
+
         } catch (EmptyResultDataAccessException e) {
             fndDepartment = null;
         }
   
         if (fndDepartment == null) {
-            Integer newId = generateIdDept();
-            Department newDepartment = new Department(newId, codeDept, nameDept);
+            Department newDepartment = new Department(deptCode, deptName);
             return save(newDepartment);
         } else {
             return fndDepartment;

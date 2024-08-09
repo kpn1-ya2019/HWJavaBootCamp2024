@@ -25,10 +25,9 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     public GenerateDeptResponse generateDept(GenerateDeptRequest request) {
-        Integer newId = departmentRepository.generateIdDept();
         String code = request.getCode();
         String name = request.getName();
-        Department newDepartment = new Department(newId, code, name);
+        Department newDepartment = new Department( code, name);
         departmentRepository.save(newDepartment);
         return  departmentMapper.deptToGenerateDeptResponse(newDepartment);
     }

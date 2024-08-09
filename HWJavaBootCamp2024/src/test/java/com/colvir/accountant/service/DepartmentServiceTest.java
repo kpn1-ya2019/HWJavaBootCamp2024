@@ -42,7 +42,7 @@ class DepartmentServiceTest {
         GenerateDeptRequest request = new GenerateDeptRequest();
         request.setCode("001");
         request.setName("Dept1");
-        Department newDepartment1 = new Department(12345, "001", "Dept1");
+        Department newDepartment1 = new Department("001", "Dept1");
 
         //Подготовка ожидаемого результата
         GenerateDeptResponse expectedResponse = new GenerateDeptResponse();
@@ -51,13 +51,11 @@ class DepartmentServiceTest {
 
         //Начало теста
 
-        when(departmentRepository.generateIdDept()).thenReturn(12345);
         when(departmentRepository.save(any())).thenReturn(newDepartment1);
 
         GenerateDeptResponse actualResponse = departmentService.generateDept(request);
         assertEquals(expectedResponse, actualResponse);
         verify(departmentRepository).save(any());
-        verify(departmentRepository).generateIdDept();
         verifyNoMoreInteractions(departmentRepository);
 
     }
@@ -65,8 +63,8 @@ class DepartmentServiceTest {
     @Test
     void getAll() {
         //Подготовка входных данных
-        Department newDepartment1 = new Department(null, "001", "Dept1");
-        Department newDepartment2 = new Department(null, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
         List<Department> allDepts =  new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -98,8 +96,10 @@ class DepartmentServiceTest {
     @Test
     void getById() {
         //Подготовка входных данных
-        Department newDepartment1 = new Department(123, "001", "Dept1");
-        Department newDepartment2 = new Department(456, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
+        newDepartment1.setId(123);
+        newDepartment2.setId(456);
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -126,8 +126,8 @@ class DepartmentServiceTest {
     @Test
     void getByCode() {
         //Подготовка входных данных
-        Department newDepartment1 = new Department(123, "001", "Dept1");
-        Department newDepartment2 = new Department(456, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -157,8 +157,8 @@ class DepartmentServiceTest {
         request.setCode("003");
         request.setName("Dept3");
 
-        Department newDepartment1 = new Department(123, "001", "Dept1");
-        Department newDepartment2 = new Department(456, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -187,8 +187,8 @@ class DepartmentServiceTest {
         //Подготовка входных данных
         Integer deleteDept = 123;
 
-        Department newDepartment1 = new Department(123, "001", "Dept1");
-        Department newDepartment2 = new Department(456, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);

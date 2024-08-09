@@ -292,8 +292,8 @@ class AgrPaymentOrderServiceTest {
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
 
 
-        Department newDepartment1 = new Department(789, "001", "Dept1");
-        Department newDepartment2 = new Department(987, "002", "Dept2");
+        Department newDepartment1 = new Department( "001", "Dept1");
+        Department newDepartment2 = new Department( "002", "Dept2");
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
