@@ -4,9 +4,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import com.colvir.accountant.model.Department;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,95 +18,91 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class PaymentTypeRepository {
-    private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<PaymentType> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentType.class);
-
-
-    public  Integer generateIdPmtType() {
-            Integer id = jdbcTemplate.query("SELECT nextval('paymenttype_seq')",
-                    rs -> {
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        } else {
-                            throw new SQLException("Unable to retrieve value from sequence paymenttype_seq.");
-                        }
-                    });
-
-        return id;
-    }
+    private final SessionFactory sessionFactory;
 
     public PaymentType save(PaymentType paymentType) {
-        String preparedStatementString = "INSERT INTO paymenttypes VALUES(?, ?);";
-        jdbcTemplate.update(preparedStatementString, paymentType.getId(), paymentType.getName());
+
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(paymentType);
+
         return paymentType;
     }
 
     public List<PaymentType> findAll() {
 
-        String statementString = "SELECT * FROM paymenttypes";
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select p from PaymentType p", PaymentType.class)
+                .getResultList();
 
     }
     public Optional<PaymentType> findById(Integer id) {
-        String statementString = "SELECT * FROM paymenttypes WHERE ID = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
+        return session.createQuery("select p from PaymentType p where p.id = :id", PaymentType.class)
+                .setParameter("id", id)
+                .getResultList().stream().findFirst();
     }
 
-    public PaymentType update(PaymentType pmtForUpdate) {
+    public PaymentType update(PaymentType updatedPmpType) {
 
-        String statementString = "UPDATE paymenttypes SET name = ? WHERE id = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-        jdbcTemplate.update(statementString, pmtForUpdate.getName(), pmtForUpdate.getId());
-
+        PaymentType pmtForUpdate = session.get(PaymentType.class, updatedPmpType.getId());
+        pmtForUpdate.setName(updatedPmpType.getName());
         return pmtForUpdate;
     }
 
     public PaymentType delete(Integer id) {
 
-        PaymentType pmtForDelete = findById(id).get();
+        Session session = sessionFactory.getCurrentSession();
 
-        String statementString = "DELETE FROM paymenttypes WHERE id = ?";
+        PaymentType pmtForDelete = session.get(PaymentType.class, id);
 
-        jdbcTemplate.update(statementString, id);
+        session.remove(pmtForDelete);
 
         return pmtForDelete;
+
     }
     public PaymentType getByName(String pmtTypeName) {
-        String statementString = "SELECT * FROM paymenttypes WHERE name = ?";
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, pmtTypeName).stream()
-                .findFirst().get();
+        Session session = sessionFactory.getCurrentSession();
 
+        return session.createQuery("select p from PaymentType p where p.name = :pmtTypeName", PaymentType.class)
+                .setParameter("pmtTypeName", pmtTypeName)
+                .getResultList().stream().findFirst().get();
     }
     public PaymentType generateNewPaymentType(String pmtTypeName) {
         PaymentType fndPaymentType;
-        RowMapper<PaymentType> paymentTypeRowMapper = (rs, rowNum)-> 
-        new PaymentType(rs.getInt("ID"),rs.getString("NAME"));
-        try {
-            String statementString = "SELECT * FROM paymenttypes WHERE name = ?";
 
-            fndPaymentType =  jdbcTemplate.queryForObject(statementString, paymentTypeRowMapper, pmtTypeName);
-    
-            //fndPaymentType =   getByName(pmtTypeName);
+        Session session = sessionFactory.getCurrentSession();
+
+        try {
+
+            fndPaymentType = session.createQuery("select p from PaymentType p where p.name = :pmtTypeName", PaymentType.class)
+                    .setParameter("pmtTypeName", pmtTypeName)
+                    .getResultList().stream().findFirst().get();
+
+            fndPaymentType = getByName(pmtTypeName);
+
         } catch (EmptyResultDataAccessException e) {
             fndPaymentType = null;
         }
 
         if (fndPaymentType == null) {
-            Integer newId = generateIdPmtType();
-            PaymentType newPaymentType = new PaymentType(newId, pmtTypeName);
+            PaymentType newPaymentType = new PaymentType(pmtTypeName);
             return save(newPaymentType);
         } else {
             return fndPaymentType;
         }
     }
-
     public PaymentType getById(Integer idPmtType) {
 
-        String statementString = "SELECT * FROM paymenttypes WHERE id = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, idPmtType).stream()
-                .findFirst().get();
+        return session.createQuery("select p from PaymentType p where p.id = :id", PaymentType.class)
+                .setParameter("id", idPmtType)
+                .getResultList().stream().findFirst().get();
+
     }
 }

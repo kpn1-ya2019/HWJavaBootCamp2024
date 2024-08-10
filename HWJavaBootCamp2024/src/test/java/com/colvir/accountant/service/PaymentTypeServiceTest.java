@@ -42,7 +42,8 @@ public class PaymentTypeServiceTest {
         //Подготовка входных данных
         GeneratePmtTypeRequest request = new GeneratePmtTypeRequest();
         request.setName("Аванс");
-        PaymentType newPaymentType1 = new PaymentType(123, "Type1");
+        PaymentType newPaymentType1 = new PaymentType("Type1");
+        newPaymentType1.setId(123);
 
         //Подготовка ожидаемого результата
         GeneratePmtTypeResponse expectedResponse = new GeneratePmtTypeResponse();
@@ -50,13 +51,11 @@ public class PaymentTypeServiceTest {
 
         //Начало теста
 
-        when(paymentTypeRepository.generateIdPmtType()).thenReturn(123);
         when(paymentTypeRepository.save(any())).thenReturn(newPaymentType1);
 
         GeneratePmtTypeResponse actualResponse = paymentTypeService.generatePmtType(request);
         assertEquals(expectedResponse, actualResponse);
         verify(paymentTypeRepository,times(1)).save(any(PaymentType.class));
-        verify(paymentTypeRepository).generateIdPmtType();
         verifyNoMoreInteractions(paymentTypeRepository);
     }
 
@@ -81,17 +80,21 @@ public class PaymentTypeServiceTest {
     @Test
     void getAll() {
         //Подготовка входных данных
-        PaymentType newPaymentType1 = new PaymentType(null, "Type1");
-        PaymentType newPaymentType2 = new PaymentType(null, "Type2");
+        PaymentType newPaymentType1 = new PaymentType( "Type1");
+        PaymentType newPaymentType2 = new PaymentType( "Type2");
+        newPaymentType1.setId(123);
+        newPaymentType2.setId(456);
         List<PaymentType> allPmtTypes =  new ArrayList<>();
         allPmtTypes.add(newPaymentType1);
         allPmtTypes.add(newPaymentType2);
 
         //Подготовка ожидаемого результата
         PaymentTypeResponse paymentTypeResponse1 = new PaymentTypeResponse();
+        paymentTypeResponse1.setId(123);
         paymentTypeResponse1.setName("Type1");
 
         PaymentTypeResponse paymentTypeResponse2 = new PaymentTypeResponse();
+        paymentTypeResponse2.setId(456);
         paymentTypeResponse2.setName("Type2");
 
         List<PaymentTypeResponse> allPaymentTypeResponse = new ArrayList<>();
@@ -112,8 +115,10 @@ public class PaymentTypeServiceTest {
     @Test
     void getById() {
         //Подготовка входных данных
-        PaymentType newPaymentType1 = new PaymentType(123, "Type1");
-        PaymentType newPaymentType2 = new PaymentType(456, "Type1");
+        PaymentType newPaymentType1 = new PaymentType("Type1");
+        PaymentType newPaymentType2 = new PaymentType("Type1");
+        newPaymentType1.setId(123);
+        newPaymentType2.setId(456);
         List<PaymentType> allPmtTypes =  new ArrayList<>();
         allPmtTypes.add(newPaymentType1);
         allPmtTypes.add(newPaymentType2);
@@ -142,8 +147,10 @@ public class PaymentTypeServiceTest {
         request.setId(123);
         request.setName("Type3");
 
-        PaymentType newPaymentType1 = new PaymentType(123, "Type1");
-        PaymentType newPaymentType2 = new PaymentType(456, "Type2");
+        PaymentType newPaymentType1 = new PaymentType( "Type1");
+        PaymentType newPaymentType2 = new PaymentType( "Type2");
+        newPaymentType1.setId(123);
+        newPaymentType2.setId(456);
         List<PaymentType> allPmtTypes =  new ArrayList<>();
         allPmtTypes.add(newPaymentType1);
         allPmtTypes.add(newPaymentType2);
@@ -171,8 +178,10 @@ public class PaymentTypeServiceTest {
         //Подготовка входных данных
         Integer deletePaymentType = 123;
 
-        PaymentType newPaymentType1 = new PaymentType(123, "Type1");
-        PaymentType newPaymentType2 = new PaymentType(456, "Type1");
+        PaymentType newPaymentType1 = new PaymentType( "Type1");
+        PaymentType newPaymentType2 = new PaymentType( "Type1");
+        newPaymentType1.setId(123);
+        newPaymentType2.setId(456);
         List<PaymentType> allPmtTypes =  new ArrayList<>();
         allPmtTypes.add(newPaymentType1);
         allPmtTypes.add(newPaymentType2);

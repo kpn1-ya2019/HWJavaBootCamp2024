@@ -26,8 +26,7 @@ public class PaymentTypeService {
 
     public GeneratePmtTypeResponse generatePmtType(GeneratePmtTypeRequest request) {
         String name = request.getName();
-        Integer newId = paymentTypeRepository.generateIdPmtType();
-        PaymentType newPaymentType = new PaymentType(newId, name);
+        PaymentType newPaymentType = new PaymentType(name);
         paymentTypeRepository.save(newPaymentType);
         return  paymentTypeMapper.pmtTypeToGeneratePmtTypeResponse(newPaymentType);
     }

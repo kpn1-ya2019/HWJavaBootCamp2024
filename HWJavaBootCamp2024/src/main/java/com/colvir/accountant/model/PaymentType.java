@@ -1,16 +1,22 @@
 package com.colvir.accountant.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 @Data
-@AllArgsConstructor
+@Table(name = "paymenttypes")
+@Entity
 @NoArgsConstructor
 public class PaymentType {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "paymenttype_seq")
+    @SequenceGenerator(name = "paymenttype_seq", sequenceName = "paymenttype_sequence", allocationSize = 1)
     private Integer   id;
     private String name;
 
+    public PaymentType(String name) {
+        this.name = name;
+    }
 }
