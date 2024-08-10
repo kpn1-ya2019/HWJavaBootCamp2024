@@ -3,6 +3,7 @@ package com.colvir.accountant.repository;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +14,7 @@ import com.colvir.accountant.model.Employee;
 import lombok.RequiredArgsConstructor;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class EmployeeRepository {
 

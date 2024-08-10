@@ -46,7 +46,8 @@ class PaymentOrderServiceTest {
         request.setIdDepartment(789);
         request.setDatePayment(currDate);
         request.setAmount(123.45);
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, currDate, 123.45);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, currDate, 123.45);
+        newPaymentOrder1.setId(123);
 
 
         //Подготовка ожидаемого результата
@@ -58,13 +59,11 @@ class PaymentOrderServiceTest {
         expectedResponse.setAmount(123.45);
 
         //Начало теста
-        when(paymentOrderRepository.generateIdPaymentOrder()).thenReturn(123);
         when(paymentOrderRepository.save(any())).thenReturn(newPaymentOrder1);
 
         GeneratePmtOrderResponse actualResponse = paymentOrderService.generatePmtOrder(request);
         assertEquals(expectedResponse, actualResponse);
         verify(paymentOrderRepository).save(any());
-        verify(paymentOrderRepository).generateIdPaymentOrder();
         verifyNoMoreInteractions(paymentOrderRepository);
     }
 
@@ -72,8 +71,10 @@ class PaymentOrderServiceTest {
     void getAll() {
         LocalDate currDate = LocalDate.now();
         //Подготовка входных данных
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, currDate, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder(321, 543, 987, 809, currDate, 678.09);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, currDate, 123.45);
+        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, currDate, 678.09);
+        newPaymentOrder1.setId(123);
+        newPaymentOrder2.setId(321);
         List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
         allPaymentOrders.add(newPaymentOrder1);
         allPaymentOrders.add(newPaymentOrder2);
@@ -115,8 +116,10 @@ class PaymentOrderServiceTest {
     void getById() {
         LocalDate currDate = LocalDate.now();
         //Подготовка входных данных
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, currDate, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder(321, 543, 987, 809, currDate, 678.09);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, currDate, 123.45);
+        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, currDate, 678.09);
+        newPaymentOrder1.setId(123);
+        newPaymentOrder2.setId(321);
         List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
         allPaymentOrders.add(newPaymentOrder1);
         allPaymentOrders.add(newPaymentOrder2);
@@ -155,8 +158,10 @@ class PaymentOrderServiceTest {
         request.setDatePayment(currDate);
         request.setAmount(777.89);
 
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, currDate, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder(321, 543, 987, 809, currDate, 678.09);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, currDate, 123.45);
+        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, currDate, 678.09);
+        newPaymentOrder1.setId(123);
+        newPaymentOrder2.setId(321);
         List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
         allPaymentOrders.add(newPaymentOrder1);
         allPaymentOrders.add(newPaymentOrder2);
@@ -191,8 +196,10 @@ class PaymentOrderServiceTest {
         Integer deletePaymentOrder = 123;
 
         //Подготовка входных данных
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, currDate, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder(321, 543, 987, 809, currDate, 678.09);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, currDate, 123.45);
+        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, currDate, 678.09);
+        newPaymentOrder1.setId(123);
+        newPaymentOrder2.setId(321);
         List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
         allPaymentOrders.add(newPaymentOrder1);
         allPaymentOrders.add(newPaymentOrder2);

@@ -277,10 +277,14 @@ class AgrPaymentOrderServiceTest {
         LocalDate paymentOrderDate3 = LocalDate.of(2024, 7, 10);
 
         //Подготовка входных данных
-        PaymentOrder newPaymentOrder1 = new PaymentOrder(123, 456, 789, 908, paymentOrderDate1, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder(321, 543, 987, 809, paymentOrderDate3, 678.09);
-        PaymentOrder newPaymentOrder3 = new PaymentOrder(456, 876, 657, 405, paymentOrderDate3, 33.309);
-        PaymentOrder newPaymentOrder4 = new PaymentOrder(789, 543, 789, 908, paymentOrderDate2, 432.11);
+        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, paymentOrderDate1, 123.45);
+        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, paymentOrderDate3, 678.09);
+        PaymentOrder newPaymentOrder3 = new PaymentOrder( 876, 657, 405, paymentOrderDate3, 33.309);
+        PaymentOrder newPaymentOrder4 = new PaymentOrder( 543, 789, 908, paymentOrderDate2, 432.11);
+        newPaymentOrder1.setId(123);
+        newPaymentOrder2.setId(321);
+        newPaymentOrder3.setId(456);
+        newPaymentOrder4.setId(789);
         List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
         allPaymentOrders.add(newPaymentOrder1);
         allPaymentOrders.add(newPaymentOrder2);

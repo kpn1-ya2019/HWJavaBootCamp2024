@@ -1,14 +1,12 @@
 package com.colvir.accountant.repository;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import com.colvir.accountant.model.Department;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.PaymentType;
@@ -16,6 +14,7 @@ import com.colvir.accountant.model.PaymentType;
 import lombok.RequiredArgsConstructor;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class PaymentTypeRepository {
     private final SessionFactory sessionFactory;

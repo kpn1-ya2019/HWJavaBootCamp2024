@@ -1,14 +1,14 @@
 package com.colvir.accountant.repository;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.PaymentOrder;
@@ -16,74 +16,60 @@ import com.colvir.accountant.model.PaymentOrder;
 import lombok.RequiredArgsConstructor;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class PaymentOrderRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<PaymentOrder> beanPropertyRowMapper = new BeanPropertyRowMapper<>(PaymentOrder.class);
-
+    private final SessionFactory sessionFactory;
     public PaymentOrder save(PaymentOrder paymentOrder) {
 
-        String preparedStatementString = "INSERT INTO paymentorders(id, idtype, iddepartment, idemployee, datepayment, amount ) VALUES(?, ?, ?, ?, ?, ?);";
-        jdbcTemplate.update(preparedStatementString, paymentOrder.getId(), paymentOrder.getIdType(), paymentOrder.getIdDepartment(),
-                paymentOrder.getIdEmployee(), paymentOrder.getDatePayment(), paymentOrder.getAmount());
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(paymentOrder);
 
         return paymentOrder;
     }
 
     public List<PaymentOrder> findAll() {
-        String statementString = "SELECT * FROM paymentorders";
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select po from PaymentOrder po", PaymentOrder.class)
+                .getResultList();
     }
 
     public Optional<PaymentOrder> findById(Integer id) {
-        String statementString = "SELECT * FROM paymentorders WHERE ID = ?";
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select po from PaymentOrder po where po.id = :id", PaymentOrder.class)
+                .setParameter("id", id)
+                .getResultList().stream().findFirst();
+
     }
 
-    public PaymentOrder update(PaymentOrder pmtForUpdate) {
+    public PaymentOrder update(PaymentOrder updatedPaymentOrder) {
 
-            String statementString = "UPDATE paymentorders SET  " +
-                    "idtype = ?, " +
-                    "iddepartment = ?, " +
-                    "idemployee = ?, " +
-                    "datepayment = ?, " +
-                    "amount = ? " +
-                    "WHERE id = ? ";
+        Session session = sessionFactory.getCurrentSession();
 
-            jdbcTemplate.update(statementString,
-                    pmtForUpdate.getIdType(),
-                    pmtForUpdate.getIdDepartment(),
-                    pmtForUpdate.getIdEmployee(),
-                    pmtForUpdate.getDatePayment(),
-                    pmtForUpdate.getAmount(),
-                    pmtForUpdate.getId());
+        PaymentOrder pmtForUpdate = session.get(PaymentOrder.class, updatedPaymentOrder.getId());
 
+        pmtForUpdate.setIdType(updatedPaymentOrder.getIdType());
+        pmtForUpdate.setIdDepartment(updatedPaymentOrder.getIdDepartment());
+        pmtForUpdate.setIdEmployee(updatedPaymentOrder.getIdEmployee());
+        pmtForUpdate.setDatePayment(updatedPaymentOrder.getDatePayment());
+        pmtForUpdate.setAmount(updatedPaymentOrder.getAmount());
 
         return pmtForUpdate;
     }
 
     public PaymentOrder delete(Integer id) {
-        PaymentOrder pmtForDelete = findById(id).get();
 
-        String statementString = "DELETE FROM paymentorders WHERE id = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-        jdbcTemplate.update(statementString, id);
+        PaymentOrder pmtForDelete = session.get(PaymentOrder.class, id);
+
+        session.remove(pmtForDelete);
 
         return pmtForDelete;
-    }
-    public  Integer generateIdPaymentOrder() {
-            Integer id = jdbcTemplate.query("SELECT nextval('paymentorder_seq')",
-                    rs -> {
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        } else {
-                            throw new SQLException("Unable to retrieve value from sequence paymentorder_seq.");
-                        }
-                    });
-
-        return id;
     }
     public PaymentOrder generateNewPaymentOrder( Integer   pmtOrderIdType,
                                                  Integer   pmtOrderIdDepartment,
@@ -93,28 +79,28 @@ public class PaymentOrderRepository {
                                                  ) {
 
         PaymentOrder fndPaymentOrder;
-        try {
-            String statementString = "SELECT * FROM paymentorders WHERE "+
-            "idtype = ? AND " +
-            "iddepartment = ? AND " +
-            "idemployee = ? AND " +
-            "datepayment = ? AND " +
-            "amount = ? ";
+        Session session = sessionFactory.getCurrentSession();
 
-            fndPaymentOrder =  jdbcTemplate.queryForObject(statementString, beanPropertyRowMapper,
-                    pmtOrderIdType,
-                    pmtOrderIdDepartment,
-                    pmtOrderIdEmployee,
-                    pmtOrderDatePayment,
-                    pmtOrderAmount);
+        try {
+
+            fndPaymentOrder = session.createQuery("select po from PaymentOrder po " +
+                            "where po.idType = :pmtOrderIdType and po.idDepartment = :pmtOrderIdDepartment and " +
+                            "      po.idEmployee = :pmtOrderIdEmployee and " +
+                            "      po.datePayment = :pmtOrderDatePayment and" +
+                            "      po.amount = :pmtOrderAmount", PaymentOrder.class)
+                    .setParameter("pmtOrderIdType", pmtOrderIdType)
+                    .setParameter("pmtOrderIdDepartment", pmtOrderIdDepartment)
+                    .setParameter("pmtOrderIdEmployee", pmtOrderIdEmployee)
+                    .setParameter("pmtOrderDatePayment", pmtOrderDatePayment)
+                    .setParameter("pmtOrderAmount", pmtOrderAmount)
+                    .getResultList().stream().findFirst().get();
 
         } catch (EmptyResultDataAccessException e) {
             fndPaymentOrder = null;
         }
 
         if (fndPaymentOrder == null) {
-            Integer newId = generateIdPaymentOrder();
-            PaymentOrder newPaymentOrder = new PaymentOrder(newId, pmtOrderIdType, pmtOrderIdDepartment, pmtOrderIdEmployee, pmtOrderDatePayment, pmtOrderAmount);
+            PaymentOrder newPaymentOrder = new PaymentOrder( pmtOrderIdType, pmtOrderIdDepartment, pmtOrderIdEmployee, pmtOrderDatePayment, pmtOrderAmount);
             return save(newPaymentOrder);
         } else {
             return fndPaymentOrder;

@@ -27,13 +27,12 @@ public class PaymentOrderService {
 
 
     public GeneratePmtOrderResponse generatePmtOrder(GeneratePmtOrderRequest request) {
-        Integer   newId = paymentOrderRepository.generateIdPaymentOrder();
         Integer   idType = request.getIdType();
         Integer   idEmployee = request.getIdEmployee();
         Integer   idDepartment = request.getIdDepartment();
         LocalDate datePayment = request.getDatePayment();
         Double amount =  request.getAmount();
-        PaymentOrder newPaymentOrder = new PaymentOrder(newId, idType, idDepartment, idEmployee, datePayment, amount);
+        PaymentOrder newPaymentOrder = new PaymentOrder( idType, idDepartment, idEmployee, datePayment, amount);
         paymentOrderRepository.save(newPaymentOrder);
         return  paymentOrderMapper.pmtOrderToGeneratePmtOrderResponse(newPaymentOrder);
     }
