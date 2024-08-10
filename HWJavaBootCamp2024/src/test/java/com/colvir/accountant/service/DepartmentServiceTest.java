@@ -128,6 +128,8 @@ class DepartmentServiceTest {
         //Подготовка входных данных
         Department newDepartment1 = new Department( "001", "Dept1");
         Department newDepartment2 = new Department( "002", "Dept2");
+        newDepartment1.setId(123);
+        newDepartment2.setId(456);
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -159,6 +161,8 @@ class DepartmentServiceTest {
 
         Department newDepartment1 = new Department( "001", "Dept1");
         Department newDepartment2 = new Department( "002", "Dept2");
+        newDepartment1.setId(123);
+        newDepartment2.setId(456);
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -189,6 +193,8 @@ class DepartmentServiceTest {
 
         Department newDepartment1 = new Department( "001", "Dept1");
         Department newDepartment2 = new Department( "002", "Dept2");
+        newDepartment1.setId(123);
+        newDepartment2.setId(456);
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);

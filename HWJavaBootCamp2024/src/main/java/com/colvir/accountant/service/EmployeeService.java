@@ -25,13 +25,12 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     public GenerateEmpResponse generateEmp(GenerateEmpRequest request) {
-        Integer   newId = employeeRepository.generateIdEmp();
         Integer   idDepartment = request.getIdDepartment();
         String surname = request.getSurname();
         String name = request.getName();
         String patronymic = request.getPatronymic();
         Double salary = request.getSalary();
-        Employee newEmployee = new Employee(newId, idDepartment, surname, name, patronymic, salary);
+        Employee newEmployee = new Employee(idDepartment, surname, name, patronymic, salary);
         employeeRepository.save(newEmployee);
         return  employeeMapper.empToGenerateEmpResponse(newEmployee);
     }

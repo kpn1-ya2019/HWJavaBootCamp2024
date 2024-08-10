@@ -294,6 +294,8 @@ class AgrPaymentOrderServiceTest {
 
         Department newDepartment1 = new Department( "001", "Dept1");
         Department newDepartment2 = new Department( "002", "Dept2");
+        newDepartment1.setId(789);
+        newDepartment2.setId(987);
         List<Department> allDepts = new ArrayList<>();
         allDepts.add(newDepartment1);
         allDepts.add(newDepartment2);
@@ -301,8 +303,10 @@ class AgrPaymentOrderServiceTest {
                 .filter(department -> department.getId().equals(789))
                 .findFirst();
 
-        Employee newEmployee1 = new Employee(908, 789, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(809, 987, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        Employee newEmployee1 = new Employee(789, "Ivanov","Ivan", "Ivanovich", 1023.45);
+        Employee newEmployee2 = new Employee(987, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        newEmployee1.setId(908);
+        newEmployee2.setId(809);
         List<Employee> allEmps =  new ArrayList<>();
         allEmps.add(newEmployee1);
         allEmps.add(newEmployee2);

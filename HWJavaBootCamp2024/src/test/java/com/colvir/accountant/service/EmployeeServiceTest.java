@@ -43,8 +43,8 @@ class EmployeeServiceTest {
         request.setName("Ivan");
         request.setPatronymic("Ivanovich");
         request.setSalary(100.23);
-        Employee newEmployee1 = new Employee(123, 10123, "Ivanov","Ivan", "Ivanovich", 100.23);
-
+        Employee newEmployee1 = new Employee(10123, "Ivanov","Ivan", "Ivanovich", 100.23);
+        newEmployee1.setId(123);
 
         //Подготовка ожидаемого результата
         GenerateEmpResponse expectedResponse = new GenerateEmpResponse();
@@ -55,13 +55,11 @@ class EmployeeServiceTest {
 
         //Начало теста
 
-        when(employeeRepository.generateIdEmp()).thenReturn(123);
         when(employeeRepository.save(any())).thenReturn(newEmployee1);
 
         GenerateEmpResponse actualResponse = employeeService.generateEmp(request);
         assertEquals(expectedResponse, actualResponse);
         verify(employeeRepository).save(any());
-        verify(employeeRepository).generateIdEmp();
         verifyNoMoreInteractions(employeeRepository);
 
     }
@@ -69,8 +67,10 @@ class EmployeeServiceTest {
     @Test
     void getAll() {
         //Подготовка входных данных
-        Employee newEmployee1 = new Employee(123, 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(234, 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        Employee newEmployee1 = new Employee( 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
+        Employee newEmployee2 = new Employee( 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        newEmployee1.setId(123);
+        newEmployee2.setId(234);
         List<Employee> allEmps =  new ArrayList<>();
         allEmps.add(newEmployee1);
         allEmps.add(newEmployee2);
@@ -111,8 +111,10 @@ class EmployeeServiceTest {
     @Test
     void getByIdAndIdDept() {
         //Подготовка входных данных
-        Employee newEmployee1 = new Employee(123, 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(234, 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        Employee newEmployee1 = new Employee( 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
+        Employee newEmployee2 = new Employee( 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        newEmployee1.setId(123);
+        newEmployee2.setId(234);
         List<Employee> allEmps =  new ArrayList<>();
         allEmps.add(newEmployee1);
         allEmps.add(newEmployee2);
@@ -151,8 +153,10 @@ class EmployeeServiceTest {
         request.setPatronymic("Petrovich");
         request.setSalary(100.23);
 
-        Employee newEmployee1 = new Employee(123, 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(234, 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        Employee newEmployee1 = new Employee( 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
+        Employee newEmployee2 = new Employee( 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        newEmployee1.setId(123);
+        newEmployee2.setId(234);
         List<Employee> allEmps =  new ArrayList<>();
         allEmps.add(newEmployee1);
         allEmps.add(newEmployee2);
@@ -186,8 +190,10 @@ class EmployeeServiceTest {
     void delete() {
         Integer deleteIdEmp = 123;
         Integer deleteIdDept = 10123;
-        Employee newEmployee1 = new Employee(123, 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(234, 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        Employee newEmployee1 = new Employee( 10123, "Ivanov","Ivan", "Ivanovich", 1023.45);
+        Employee newEmployee2 = new Employee( 20456, "Sidorov","Sidor", "Sidorovich", 2045.67);
+        newEmployee1.setId(123);
+        newEmployee2.setId(234);
         List<Employee> allEmps =  new ArrayList<>();
         allEmps.add(newEmployee1);
         allEmps.add(newEmployee2);
