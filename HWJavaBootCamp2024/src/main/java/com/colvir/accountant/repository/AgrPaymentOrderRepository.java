@@ -1,14 +1,14 @@
 package com.colvir.accountant.repository;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.AgrPaymentOrder;
@@ -16,115 +16,106 @@ import com.colvir.accountant.model.AgrPaymentOrder;
 import lombok.RequiredArgsConstructor;
 
 @Repository
+@Transactional
 @RequiredArgsConstructor
 public class AgrPaymentOrderRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final BeanPropertyRowMapper<AgrPaymentOrder> beanPropertyRowMapper = new BeanPropertyRowMapper<>(AgrPaymentOrder.class);
+    private final SessionFactory sessionFactory;
     private final Logger log = LogManager.getLogger(AgrPaymentOrderRepository.class);
 
     public AgrPaymentOrder save(AgrPaymentOrder agrPaymentOrder) {
-        String preparedStatementString = "INSERT INTO agrpaymentorders (id, paymenttypename, departmentcode, departmentname, employeesurname, employeename, employeepatronymic, amountpaymentorder) VALUES(?, ?, ?, ?, ?, ?, ?,?);";
-        jdbcTemplate.update(preparedStatementString, agrPaymentOrder.getId(),
-                                                     agrPaymentOrder.getPaymentTypeName(),
-                                                     agrPaymentOrder.getDepartmentCode(),
-                                                     agrPaymentOrder.getDepartmentName(),
-                                                     agrPaymentOrder.getEmployeeSurname(),
-                                                     agrPaymentOrder.getEmployeeName(),
-                                                     agrPaymentOrder.getEmployeePatronymic(),
-                                                     agrPaymentOrder.getAmountPaymentOrder());
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(agrPaymentOrder);
         return agrPaymentOrder;
     }
 
     public List<AgrPaymentOrder> findAll() {
-        String statementString = "SELECT * FROM agrpaymentorders";
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select a from AgrPaymentOrder a", AgrPaymentOrder.class)
+                .getResultList();
 
     }
     public Optional<AgrPaymentOrder> findById(Integer id) {
-        String statementString = "SELECT * FROM agrpaymentorders WHERE ID = ?";
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{id}).stream().findFirst();
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select a from AgrPaymentOrder a where a.id = :id", AgrPaymentOrder.class)
+                .setParameter("id", id)
+                .getResultList().stream().findFirst();
+
     }
     public List<AgrPaymentOrder>  findPmtTypeName(String pmtTypeName) {
 
-        String statementString = "SELECT * FROM agrpaymentorders WHERE paymenttypename = ?";
+        Session session = sessionFactory.getCurrentSession();
 
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper, new Object[]{pmtTypeName});
+        return session.createQuery("select a from AgrPaymentOrder a where a.paymentTypeName = :pmtTypeName", AgrPaymentOrder.class)
+                .setParameter("pmtTypeName", pmtTypeName)
+                .getResultList();
+
     }
-    public AgrPaymentOrder update(AgrPaymentOrder pmtForUpdate) {
-        String statementString =
-                "UPDATE agrpaymentorders SET " +
-                        "paymentTypeName = ?, " +
-                        "departmentCode      = ?, " +
-                        "departmentName      = ?, " +
-                        "employeeSurname     = ?, " +
-                        "employeeName        = ?, " +
-                        "employeePatronymic  = ?, " +
-                        "amountPaymentOrder  = ? " +
-                      "WHERE id = ?";
+    public AgrPaymentOrder update(AgrPaymentOrder updatedAgrPaymentOrder) {
 
-        jdbcTemplate.update(statementString,
-                pmtForUpdate.getPaymentTypeName(),
-                pmtForUpdate.getDepartmentCode(),
-                pmtForUpdate.getDepartmentName(),
-                pmtForUpdate.getEmployeeSurname(),
-                pmtForUpdate.getEmployeeName(),
-                pmtForUpdate.getEmployeePatronymic(),
-                pmtForUpdate.getAmountPaymentOrder(),
-                pmtForUpdate.getId()
-        );
+        Session session = sessionFactory.getCurrentSession();
+
+        AgrPaymentOrder pmtForUpdate = session.get(AgrPaymentOrder.class, updatedAgrPaymentOrder.getId());
+
+        pmtForUpdate.setPaymentTypeName(updatedAgrPaymentOrder.getPaymentTypeName());
+        pmtForUpdate.setDepartmentCode(updatedAgrPaymentOrder.getDepartmentCode());
+        pmtForUpdate.setDepartmentName(updatedAgrPaymentOrder.getDepartmentName());
+        pmtForUpdate.setEmployeeSurname(updatedAgrPaymentOrder.getEmployeeSurname());
+        pmtForUpdate.setEmployeeName(updatedAgrPaymentOrder.getEmployeeName());
+        pmtForUpdate.setEmployeePatronymic(updatedAgrPaymentOrder.getEmployeePatronymic());
+        pmtForUpdate.setAmountPaymentOrder(updatedAgrPaymentOrder.getAmountPaymentOrder());
 
         return pmtForUpdate;
     }
 
     public AgrPaymentOrder delete(Integer id) {
 
-        AgrPaymentOrder pmtForDelete = findById(id).get();
+        Session session = sessionFactory.getCurrentSession();
 
-        String statementString = "DELETE FROM agrpaymentorders WHERE id = ?";
+        AgrPaymentOrder pmtForDelete = session.get(AgrPaymentOrder.class, id);
 
-        jdbcTemplate.update(statementString, id);
+        session.remove(pmtForDelete);
+
         return pmtForDelete;
     }
-    public Integer generateIdAgrPaymentOrder() {
-            Integer id = jdbcTemplate.query("SELECT nextval('agrpaymentorder_seq')",
-                    rs -> {
-                        if (rs.next()) {
-                            return rs.getInt(1);
-                        } else {
-                            throw new SQLException("Unable to retrieve value from sequence agrpaymentorder_seq.");
-                        }
-                    });
-
-        return id;
-    }
-
- 
 
     public List<AgrPaymentOrder>  calculate(LocalDate dtFrom, LocalDate dtTo) {
 
-        String statementString = "DELETE FROM agrpaymentorders";
+        Session session = sessionFactory.getCurrentSession();
 
-        jdbcTemplate.update(statementString);
+        Integer cntDelRows =  session.createQuery("delete from AgrPaymentOrder", AgrPaymentOrder.class).executeUpdate();
 
-        statementString = "INSERT INTO agrpaymentorders(id, paymenttypename, departmentcode, departmentname, employeesurname, employeename, employeepatronymic, amountpaymentorder) "+
-                                 "SELECT nextval('agrpaymentorder_seq'), p.name paymenttypename, d.code departmentcode, d.name departmentname, "+
-                                 "       e.surname employeesurname, e.name employeename, e.patronymic employeepatronymic, sum(po.amount)  "+
-                                 "  FROM paymentorders po "+
-                                 "       INNER JOIN paymenttypes p on (p.id = po.idtype) "+
-                                 "       INNER JOIN departments  d on (d.id = po.iddepartment) "+
-                                 "       INNER JOIN employees    e on (e.id = po.idemployee and e.iddepartment = po.iddepartment) "+
-                                 "  WHERE po.datepayment >= ? and po.datepayment <=? "+
+        log.info("Method delete {} rows before calculate", cntDelRows);
+
+        String statementString = "INSERT INTO AgrPaymentOrder (paymentTypeName, departmentCode, departmentName, employeeSurname, employeeName, employeePatronymic, amountPaymentOrder) "+
+                                 "SELECT p.name AS paymenttypename, d.code AS departmentcode, d.name AS departmentname, "+
+                                 "       e.surname AS employeesurname, e.name AS employeename, e.patronymic AS employeepatronymic, sum(po.amount)  "+
+                                 "  FROM PaymentOrder po "+
+                                 "       INNER JOIN PaymentType p on (p.id = po.idType) "+
+                                 "       INNER JOIN Department  d on (d.id = po.idDepartment) "+
+                                 "       INNER JOIN Employee    e on (e.id = po.idEmployee and e.idDepartment = po.idDepartment) "+
+                                 "  WHERE po.datePayment >= :dtFrom and po.datePayment <=:dtTo "+
                                  "  GROUP BY p.name, d.code, d.name, e.surname, e.name, e.patronymic";
 
-        Integer iRes = jdbcTemplate.update(statementString, dtFrom, dtTo);
+
+        Integer  iRes =     session.createMutationQuery(statementString)
+                                   .setParameter("dtFrom", dtFrom)
+                                   .setParameter("dtTo", dtTo)
+                                   .executeUpdate();
+/*deprecated!!!
+        Integer  iRes =  session.createQuery(statementString)
+                .setParameter("dtFrom", dtFrom)
+                .setParameter("dtTo", dtTo)
+                .executeUpdate();
+*/
+
         log.info("Method calculate do it {} rows", iRes);
 
-        statementString = "SELECT * FROM agrpaymentorders";
-        return jdbcTemplate.query(statementString, beanPropertyRowMapper);
-
-
+        return session.createQuery("select a from AgrPaymentOrder a", AgrPaymentOrder.class)
+                .getResultList();
 
   }
 

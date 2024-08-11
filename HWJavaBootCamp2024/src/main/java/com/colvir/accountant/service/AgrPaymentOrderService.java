@@ -26,7 +26,6 @@ public class AgrPaymentOrderService {
     private final AgrPaymentOrderRepository agrPaymentOrderRepository;
 
     public GenerateAgrPmtOrderResponse generateAgrPmtOrder(GenerateAgrPmtOrderRequest request) {
-        Integer   newId = agrPaymentOrderRepository.generateIdAgrPaymentOrder();
         String    paymentTypeName = request.getPaymentTypeName();
         String    departmentCode = request.getDepartmentCode();
         String    departmentName= request.getDepartmentName();
@@ -35,7 +34,7 @@ public class AgrPaymentOrderService {
         String    employeePatronymic= request.getEmployeePatronymic();
         Double    amountPaymentOrder= request.getAmountPaymentOrder();
 
-        AgrPaymentOrder newAgrPaymentOrder = new AgrPaymentOrder(newId, paymentTypeName,departmentCode,departmentName,employeeSurname,employeeName,employeePatronymic,amountPaymentOrder );
+        AgrPaymentOrder newAgrPaymentOrder = new AgrPaymentOrder(paymentTypeName,departmentCode,departmentName,employeeSurname,employeeName,employeePatronymic,amountPaymentOrder );
         agrPaymentOrderRepository.save(newAgrPaymentOrder);
         return  agrPaymentOrderMapper.agrPmtOrderToGenerateAgrPmtOrderResponse(newAgrPaymentOrder);
     }

@@ -4,13 +4,7 @@ import com.colvir.accountant.config.TestConfig;
 import com.colvir.accountant.dto.*;
 import com.colvir.accountant.mapper.AgrPaymentOrderMapper;
 import com.colvir.accountant.model.AgrPaymentOrder;
-import com.colvir.accountant.model.Department;
-import com.colvir.accountant.model.Employee;
-import com.colvir.accountant.model.PaymentOrder;
 import com.colvir.accountant.repository.AgrPaymentOrderRepository;
-import com.colvir.accountant.repository.DepartmentRepository;
-import com.colvir.accountant.repository.EmployeeRepository;
-import com.colvir.accountant.repository.PaymentOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +34,6 @@ class AgrPaymentOrderServiceTest {
     @MockBean
     private AgrPaymentOrderRepository agrPaymentOrderRepository;
 
-    @MockBean
-    private  PaymentOrderRepository paymentOrderRepository;
-    @MockBean
-    private  DepartmentRepository departmentRepository;
-    @MockBean
-    private  EmployeeRepository employeeRepository;
-
     @Test
     void generateAgrPmtOrder_success() {
         //Подготовка входных данных
@@ -58,7 +45,8 @@ class AgrPaymentOrderServiceTest {
         request.setEmployeeName("Ivan");
         request.setEmployeePatronymic("Ivanovich");
         request.setAmountPaymentOrder(1.23);
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(123,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        newAgrPaymentOrder1.setId(123);
 
         //Подготовка ожидаемого результата
         GenerateAgrPmtOrderResponse expectedResponse = new GenerateAgrPmtOrderResponse();
@@ -72,27 +60,28 @@ class AgrPaymentOrderServiceTest {
 
         //Начало теста
 
-        when(agrPaymentOrderRepository.generateIdAgrPaymentOrder()).thenReturn(123);
         when(agrPaymentOrderRepository.save(any())).thenReturn(newAgrPaymentOrder1);
 
         GenerateAgrPmtOrderResponse actualResponse = agrPaymentOrderService.generateAgrPmtOrder(request);
         assertEquals(expectedResponse, actualResponse);
         verify(agrPaymentOrderRepository).save(any());
-        verify(agrPaymentOrderRepository).generateIdAgrPaymentOrder();
         verifyNoMoreInteractions(agrPaymentOrderRepository);
     }
 
     @Test
     void getAll() {
         //Подготовка входных данных
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(null,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
-        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder(null,"Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder("Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        newAgrPaymentOrder1.setId(123);
+        newAgrPaymentOrder2.setId(456);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
         allAgrPaymentOrders.add(newAgrPaymentOrder2);
 
         //Подготовка ожидаемого результата
         AgrPaymentOrderResponse AgrPmtOrderResponse1 = new AgrPaymentOrderResponse();
+        AgrPmtOrderResponse1.setId(123);
         AgrPmtOrderResponse1.setPaymentTypeName("Type1");
         AgrPmtOrderResponse1.setDepartmentCode("001");
         AgrPmtOrderResponse1.setDepartmentName("Dept1");
@@ -102,6 +91,7 @@ class AgrPaymentOrderServiceTest {
         AgrPmtOrderResponse1.setAmountPaymentOrder(1.23);
 
         AgrPaymentOrderResponse AgrPmtOrderResponse2 = new AgrPaymentOrderResponse();
+        AgrPmtOrderResponse2.setId(456);
         AgrPmtOrderResponse2.setPaymentTypeName("Type2");
         AgrPmtOrderResponse2.setDepartmentCode("002");
         AgrPmtOrderResponse2.setDepartmentName("Dept2");
@@ -128,8 +118,10 @@ class AgrPaymentOrderServiceTest {
     @Test
     void getById() {
         //Подготовка входных данных
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(123,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
-        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder(456,"Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder("Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        newAgrPaymentOrder1.setId(123);
+        newAgrPaymentOrder2.setId(456);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
         allAgrPaymentOrders.add(newAgrPaymentOrder2);
@@ -171,8 +163,10 @@ class AgrPaymentOrderServiceTest {
         request.setEmployeePatronymic("Sidorovich");
         request.setAmountPaymentOrder(7.83);
 
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(123,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
-        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder(456,"Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder("Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        newAgrPaymentOrder1.setId(123);
+        newAgrPaymentOrder2.setId(456);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
         allAgrPaymentOrders.add(newAgrPaymentOrder2);
@@ -206,8 +200,10 @@ class AgrPaymentOrderServiceTest {
     void delete() {
         Integer deleteAgrPmtOrder = 123;
 
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(123,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
-        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder(456,"Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder2 = new AgrPaymentOrder("Type2", "002", "Dept2", "Petrov", "Petr", "Petrovich", 4.56);
+        newAgrPaymentOrder1.setId(123);
+        newAgrPaymentOrder2.setId(456);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
         allAgrPaymentOrders.add(newAgrPaymentOrder2);
@@ -240,12 +236,14 @@ class AgrPaymentOrderServiceTest {
     @Test
     void getByPmtTypeName() {
         //Подготовка входных данных
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(null,"Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("Type1", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 1.23);
+        newAgrPaymentOrder1.setId(123);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
 
         //Подготовка ожидаемого результата
         AgrPaymentOrderResponse AgrPmtOrderResponse1 = new AgrPaymentOrderResponse();
+        AgrPmtOrderResponse1.setId(123);
         AgrPmtOrderResponse1.setPaymentTypeName("Type1");
         AgrPmtOrderResponse1.setDepartmentCode("001");
         AgrPmtOrderResponse1.setDepartmentName("Dept1");
@@ -271,53 +269,11 @@ class AgrPaymentOrderServiceTest {
     @Test
     void calculate() {
 
-
-        LocalDate paymentOrderDate1 = LocalDate.of(2024, 7, 3);
-        LocalDate paymentOrderDate2 = LocalDate.of(2024, 7, 4);
-        LocalDate paymentOrderDate3 = LocalDate.of(2024, 7, 10);
-
         //Подготовка входных данных
-        PaymentOrder newPaymentOrder1 = new PaymentOrder( 456, 789, 908, paymentOrderDate1, 123.45);
-        PaymentOrder newPaymentOrder2 = new PaymentOrder( 543, 987, 809, paymentOrderDate3, 678.09);
-        PaymentOrder newPaymentOrder3 = new PaymentOrder( 876, 657, 405, paymentOrderDate3, 33.309);
-        PaymentOrder newPaymentOrder4 = new PaymentOrder( 543, 789, 908, paymentOrderDate2, 432.11);
-        newPaymentOrder1.setId(123);
-        newPaymentOrder2.setId(321);
-        newPaymentOrder3.setId(456);
-        newPaymentOrder4.setId(789);
-        List<PaymentOrder> allPaymentOrders =  new ArrayList<>();
-        allPaymentOrders.add(newPaymentOrder1);
-        allPaymentOrders.add(newPaymentOrder2);
-        allPaymentOrders.add(newPaymentOrder3);
-        allPaymentOrders.add(newPaymentOrder4);
-
-        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder(123,"", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 555.56);
+        AgrPaymentOrder newAgrPaymentOrder1 = new AgrPaymentOrder("", "001", "Dept1", "Ivanov", "Ivan", "Ivanovich", 555.56);
+        newAgrPaymentOrder1.setId(123);
         List<AgrPaymentOrder> allAgrPaymentOrders =  new ArrayList<>();
         allAgrPaymentOrders.add(newAgrPaymentOrder1);
-
-
-        Department newDepartment1 = new Department( "001", "Dept1");
-        Department newDepartment2 = new Department( "002", "Dept2");
-        newDepartment1.setId(789);
-        newDepartment2.setId(987);
-        List<Department> allDepts = new ArrayList<>();
-        allDepts.add(newDepartment1);
-        allDepts.add(newDepartment2);
-        Optional<Department>  optionalDepartment = allDepts.stream()
-                .filter(department -> department.getId().equals(789))
-                .findFirst();
-
-        Employee newEmployee1 = new Employee(789, "Ivanov","Ivan", "Ivanovich", 1023.45);
-        Employee newEmployee2 = new Employee(987, "Sidorov","Sidor", "Sidorovich", 2045.67);
-        newEmployee1.setId(908);
-        newEmployee2.setId(809);
-        List<Employee> allEmps =  new ArrayList<>();
-        allEmps.add(newEmployee1);
-        allEmps.add(newEmployee2);
-        Optional<Employee> optionalEmployee = allEmps.stream()
-                .filter(employee -> employee.getId().equals(908) &&
-                        employee.getIdDepartment().equals(789))
-                .findFirst();
 
         //Подготовка ожидаемого результата
         AgrPaymentOrderResponse AgrPmtOrderResponse1 = new AgrPaymentOrderResponse();

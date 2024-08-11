@@ -82,7 +82,7 @@ public class PaymentTypeRepository {
                     .setParameter("pmtTypeName", pmtTypeName)
                     .getResultList().stream().findFirst().get();
 
-            fndPaymentType = getByName(pmtTypeName);
+           //to do test fndPaymentType = getByName(pmtTypeName);
 
         } catch (EmptyResultDataAccessException e) {
             fndPaymentType = null;
