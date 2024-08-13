@@ -85,6 +85,10 @@ public class AccountantService {
             Employee empDmitriev = employeeRepository.generateNewEmployee(idManufDept, "Dmitriev", "Dmitrievich", "Dmitry", 5432.76);
             Employee empSidorov2 = employeeRepository.generateNewEmployee(idManufDept, "Sidorov", "Sidorovich", "Sidr", 4323.54);
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
             //Выплаты
             List<PaymentOrder> paymentOrders = new ArrayList<>();
             paymentOrders.add(paymentOrderRepository

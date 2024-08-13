@@ -1,12 +1,30 @@
 package com.colvir.accountant.model;
 
 <<<<<<< HEAD
+import org.springframework.data.annotation.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+=======
+<<<<<<< HEAD
+>>>>>>> master
 public class Department {
-    //сущность Подразделение (наименование, код)
-    private Long id;
-    private String name;
+    //сущность
+    @Id
+    private Integer   id;
+
     private String code;
 
+<<<<<<< HEAD
+    private String name;
+
+=======
 =======
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +42,5 @@ public class Department {
     private String name;
 
 >>>>>>> 68020e89b9af49acf8c8a6d413334b4b974d7bc9
+>>>>>>> master
 }

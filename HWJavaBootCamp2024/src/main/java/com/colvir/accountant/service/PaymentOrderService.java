@@ -1,16 +1,34 @@
 package com.colvir.accountant.service;
 
+<<<<<<< HEAD
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.colvir.accountant.dto.GeneratePmtOrderRequest;
+import com.colvir.accountant.dto.GeneratePmtOrderResponse;
+import com.colvir.accountant.dto.PaymentOrderResponse;
+import com.colvir.accountant.dto.PmtOrderPageResponse;
+import com.colvir.accountant.dto.UpdatePmtOrderRequest;
+=======
 import com.colvir.accountant.dto.*;
+>>>>>>> master
 import com.colvir.accountant.exception.PmtOrderNotFoundException;
 import com.colvir.accountant.mapper.PaymentOrderMapper;
 import com.colvir.accountant.model.PaymentOrder;
 import com.colvir.accountant.repository.PaymentOrderRepository;
+<<<<<<< HEAD
+
+import lombok.RequiredArgsConstructor;
+=======
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+>>>>>>> master
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +38,25 @@ public class PaymentOrderService {
 
     private final PaymentOrderRepository paymentOrderRepository;
 
+<<<<<<< HEAD
+
+    public GeneratePmtOrderResponse generatePmtOrder(GeneratePmtOrderRequest request) {
+        Integer   newId = paymentOrderRepository.generateIdPaymentOrder();
+=======
     private final Random randomPmtOrder = new Random();
 
     public GeneratePmtOrderResponse generatePmtOrder(GeneratePmtOrderRequest request) {
+>>>>>>> master
         Integer   idType = request.getIdType();
         Integer   idEmployee = request.getIdEmployee();
         Integer   idDepartment = request.getIdDepartment();
         LocalDate datePayment = request.getDatePayment();
         Double amount =  request.getAmount();
+<<<<<<< HEAD
+        PaymentOrder newPaymentOrder = new PaymentOrder(newId, idType, idDepartment, idEmployee, datePayment, amount);
+=======
         PaymentOrder newPaymentOrder = new PaymentOrder(randomPmtOrder.nextInt(), idType, idDepartment, idEmployee, datePayment, amount);
+>>>>>>> master
         paymentOrderRepository.save(newPaymentOrder);
         return  paymentOrderMapper.pmtOrderToGeneratePmtOrderResponse(newPaymentOrder);
     }

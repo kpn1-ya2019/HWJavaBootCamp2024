@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -40,6 +42,7 @@
 
 </project>
 =======
+>>>>>>> master
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -56,6 +59,12 @@
 	<description>accountant for enterprise</description>
 	<properties>
 		<java.version>17</java.version>
+<<<<<<< HEAD
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+=======
+>>>>>>> master
 	</properties>
 	<dependencies>
 		<dependency>
@@ -68,6 +77,10 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
@@ -93,6 +106,29 @@
 			<version>1.2</version>
 		</dependency>
 
+<<<<<<< HEAD
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>6.1.8</version>
+		</dependency>
+
+=======
+>>>>>>> master
 	</dependencies>
 
 	<build>
@@ -114,10 +150,32 @@
 							<version>1.5.5.Final</version>
 						</path>
 					</annotationProcessorPaths>
+<<<<<<< HEAD
+
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.colvir.accountant.AccountantApplication</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+=======
+				</configuration>
+>>>>>>> master
 			</plugin>
 		</plugins>
 	</build>
 
 </project>
+<<<<<<< HEAD
+=======
 >>>>>>> 68020e89b9af49acf8c8a6d413334b4b974d7bc9
+>>>>>>> master

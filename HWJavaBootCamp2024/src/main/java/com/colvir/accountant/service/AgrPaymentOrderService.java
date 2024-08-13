@@ -1,5 +1,23 @@
 package com.colvir.accountant.service;
 
+<<<<<<< HEAD
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.colvir.accountant.dto.AgrPaymentOrderResponse;
+import com.colvir.accountant.dto.AgrPmtOrderPageResponse;
+import com.colvir.accountant.dto.GenerateAgrPmtOrderRequest;
+import com.colvir.accountant.dto.GenerateAgrPmtOrderResponse;
+import com.colvir.accountant.dto.UpdateAgrPmtOrderRequest;
+import com.colvir.accountant.exception.AgrPmtOrderNotFoundException;
+import com.colvir.accountant.mapper.AgrPaymentOrderMapper;
+import com.colvir.accountant.model.AgrPaymentOrder;
+import com.colvir.accountant.repository.AgrPaymentOrderRepository;
+
+import lombok.RequiredArgsConstructor;
+=======
 import com.colvir.accountant.dto.*;
 import com.colvir.accountant.exception.AgrPmtOrderNotFoundException;
 import com.colvir.accountant.mapper.AgrPaymentOrderMapper;
@@ -14,6 +32,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
+>>>>>>> master
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +42,19 @@ public class AgrPaymentOrderService {
 
     private final AgrPaymentOrderRepository agrPaymentOrderRepository;
 
+<<<<<<< HEAD
+    public GenerateAgrPmtOrderResponse generateAgrPmtOrder(GenerateAgrPmtOrderRequest request) {
+        Integer   newId = agrPaymentOrderRepository.generateIdAgrPaymentOrder();
+        String    paymentTypeName = request.getPaymentTypeName();
+        String    departmentCode = request.getDepartmentCode();
+        String    departmentName= request.getDepartmentName();
+        String    employeeSurname= request.getEmployeeSurname();
+        String    employeeName= request.getEmployeeName();
+        String    employeePatronymic= request.getEmployeePatronymic();
+        Double    amountPaymentOrder= request.getAmountPaymentOrder();
+
+        AgrPaymentOrder newAgrPaymentOrder = new AgrPaymentOrder(newId, paymentTypeName,departmentCode,departmentName,employeeSurname,employeeName,employeePatronymic,amountPaymentOrder );
+=======
     private final PaymentOrderRepository paymentOrderRepository;
 
     private final DepartmentRepository departmentRepository;
@@ -41,6 +73,7 @@ public class AgrPaymentOrderService {
         Double  amountPaymentOrder= request.getAmountPaymentOrder();
 
         AgrPaymentOrder newAgrPaymentOrder = new AgrPaymentOrder(randomAgrPmtOrder.nextInt(),paymentTypeName,departmentCode,departmentName,employeeSurname,employeeName,employeePatronymic,amountPaymentOrder );
+>>>>>>> master
         agrPaymentOrderRepository.save(newAgrPaymentOrder);
         return  agrPaymentOrderMapper.agrPmtOrderToGenerateAgrPmtOrderResponse(newAgrPaymentOrder);
     }
@@ -85,6 +118,9 @@ public class AgrPaymentOrderService {
 
     public AgrPmtOrderPageResponse calculate(LocalDate dtFrom, LocalDate dtTo) {
 
+<<<<<<< HEAD
+        List<AgrPaymentOrder> calcAgrPaymentOrders =   agrPaymentOrderRepository.calculate(dtFrom, dtTo);
+=======
         //https://stackoverflow.com/questions/28342814/group-by-multiple-field-names-in-java-8
         //https://for-each.dev/lessons/b/-java-groupingby-collector
 
@@ -114,6 +150,7 @@ public class AgrPaymentOrderService {
                                               employeeRepository.findByIdAndIdDept((Integer) e.getValue1(), (Integer) e.getValue0()).get().getName(),
                                               employeeRepository.findByIdAndIdDept((Integer) e.getValue1(), (Integer) e.getValue0()).get().getPatronymic(),
                                               agrAmount)));
+>>>>>>> master
 
         return agrPaymentOrderMapper.agrPmtOrdersToAgrPmtOrderPageResponse(calcAgrPaymentOrders);
 

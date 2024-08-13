@@ -1,14 +1,31 @@
 package com.colvir.accountant.service;
 
+<<<<<<< HEAD
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.colvir.accountant.dto.GeneratePmtTypeRequest;
+import com.colvir.accountant.dto.GeneratePmtTypeResponse;
+import com.colvir.accountant.dto.PaymentTypeResponse;
+import com.colvir.accountant.dto.PmtTypePageResponse;
+import com.colvir.accountant.dto.UpdatePmtTypeRequest;
+=======
 import com.colvir.accountant.dto.*;
+>>>>>>> master
 import com.colvir.accountant.exception.PmtTypeNotFoundException;
 import com.colvir.accountant.mapper.PaymentTypeMapper;
 import com.colvir.accountant.model.PaymentType;
 import com.colvir.accountant.repository.PaymentTypeRepository;
+<<<<<<< HEAD
+
+import lombok.RequiredArgsConstructor;
+=======
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+>>>>>>> master
 
 @Service
 @RequiredArgsConstructor

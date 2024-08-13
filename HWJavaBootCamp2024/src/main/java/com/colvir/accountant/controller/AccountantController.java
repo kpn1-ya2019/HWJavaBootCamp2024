@@ -1,11 +1,22 @@
 package com.colvir.accountant.controller;
 
+<<<<<<< HEAD
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.colvir.accountant.dto.GenerateAccountantResponse;
+import com.colvir.accountant.service.AccountantService;
+
+import lombok.RequiredArgsConstructor;
+=======
 import com.colvir.accountant.dto.GenerateAccountantResponse;
 import com.colvir.accountant.service.AccountantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+>>>>>>> master
 
 @RestController
 @RequestMapping("accountant")
@@ -19,7 +30,11 @@ public class AccountantController {
       return "Hello! Accountant";
     }
 
+<<<<<<< HEAD
+    @GetMapping("fillTest/fillTest")
+=======
     @GetMapping("/fillTest")
+>>>>>>> master
     public GenerateAccountantResponse fillTest(){
         return accountantService.fillTest();
     }

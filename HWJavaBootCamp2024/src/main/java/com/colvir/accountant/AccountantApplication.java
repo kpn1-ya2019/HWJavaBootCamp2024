@@ -3,12 +3,20 @@ package com.colvir.accountant;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 <<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+>>>>>>> master
 @SpringBootApplication
 public class AccountantApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(AccountantApplication.class, args);
-    }
+
+	public static void main(String[] args) {
+		SpringApplication.run(AccountantApplication.class, args);
+	}
+
 }
+<<<<<<< HEAD
+=======
 /*
 Написать веб приложение для управления сущностями.
 Пример: бухгалтерское приложение для управления кадрами и расчета заработной платы.
@@ -29,3 +37,4 @@ public class AccountantApplication {
 
 }
 >>>>>>> 68020e89b9af49acf8c8a6d413334b4b974d7bc9
+>>>>>>> master
