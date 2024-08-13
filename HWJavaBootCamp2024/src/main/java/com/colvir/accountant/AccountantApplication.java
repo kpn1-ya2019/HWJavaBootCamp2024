@@ -2,6 +2,7 @@ package com.colvir.accountant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+<<<<<<< HEAD
 @SpringBootApplication
 public class AccountantApplication {
     public static void main(String[] args) {
@@ -17,3 +18,14 @@ public class AccountantApplication {
 Сервисный слой покрыт тестами
 Стек: Java 17, Spring boot 3.*.*, maven, Junit, Mockito
  */
+=======
+
+@SpringBootApplication
+public class AccountantApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(AccountantApplication.class, args);
+	}
+
+}
+>>>>>>> 68020e89b9af49acf8c8a6d413334b4b974d7bc9
