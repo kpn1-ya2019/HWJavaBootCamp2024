@@ -28,6 +28,11 @@ public class EmployeeController {
     @PutMapping
     public EmployeeResponse update(@RequestBody UpdateEmployeeRequest request) {return employeeService.update(request); }
 
+<<<<<<< HEAD
     @DeleteMapping("/{id}, {idDepartment}")
     public EmployeeResponse delete(@PathVariable Integer id, @PathVariable Integer idDepartment) {return employeeService.delete(id, idDepartment); }
+=======
+    @DeleteMapping("/id")
+    public EmployeeResponse delete(@RequestBody UpdateEmployeeRequest request) {return employeeService.update(request); }
+>>>>>>> master
 }

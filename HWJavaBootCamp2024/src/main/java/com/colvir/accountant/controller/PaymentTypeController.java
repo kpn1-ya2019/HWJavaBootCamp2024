@@ -26,6 +26,11 @@ public class PaymentTypeController {
     @PutMapping
     public PaymentTypeResponse update(@RequestBody UpdatePmtTypeRequest request) {return paymentTypeService.update(request); }
 
+<<<<<<< HEAD
     @DeleteMapping("/{id}")
     public PaymentTypeResponse delete(@PathVariable Integer id) {return paymentTypeService.delete(id); }
+=======
+    @DeleteMapping("/id")
+    public PaymentTypeResponse delete(@RequestBody UpdatePmtTypeRequest request) {return paymentTypeService.update(request); }
+>>>>>>> master
 }
