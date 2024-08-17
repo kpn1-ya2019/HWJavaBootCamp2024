@@ -12,7 +12,7 @@ public class Employee {
   //Сущность: сотрудник (имя, отдел, фамилия, зарплата)
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq")
-  @SequenceGenerator(name = "employee_seq", sequenceName = "employee_sequence", allocationSize = 1)
+  @SequenceGenerator(name = "employee_seq", sequenceName = "employee_seq", allocationSize = 1)
   private Integer   id;
   private Integer   idDepartment;
   private String surname;

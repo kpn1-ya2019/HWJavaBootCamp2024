@@ -3,14 +3,13 @@ package com.colvir.accountant.repository;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.Employee;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -92,27 +91,25 @@ public class EmployeeRepository {
     }
 
     public Employee generateNewEmployee(Integer empIdDepartment, String empSurname, String empPatronymic, String empName, Double empSalary){
-        Employee fndEmployee;
-
         Session session = sessionFactory.getCurrentSession();
 
-        try {
+        Optional<Employee> optEmploee = 
 
-            fndEmployee = session.createQuery("select e from Employee e where e.surname= :empSurname AND e.name= :empName AND e.patronymic=  :empPatronymic", Employee.class)
-                    .setParameter("empSurname", empSurname)
-                    .setParameter("empName", empName)
-                    .setParameter("empPatronymic", empPatronymic)
-                    .getResultList().stream().findFirst().get();
-
-        } catch (EmptyResultDataAccessException e) {
-            fndEmployee = null;
-        }
-
-        if (fndEmployee == null) {
-            Employee newEmployee = new Employee(empIdDepartment, empSurname, empPatronymic, empName, empSalary);
+         session.createQuery("select e from Employee e where e.surname= :empSurname AND e.name= :empName AND e.patronymic=  :empPatronymic", Employee.class)
+                .setParameter("empSurname", empSurname)
+                .setParameter("empName", empName)
+                .setParameter("empPatronymic", empPatronymic)
+                .setFirstResult(0)
+                .setMaxResults(1)
+                .uniqueResultOptional();
+                
+        if  ( optEmploee.isEmpty())
+        {
+            Employee newEmployee = new Employee(empIdDepartment, empSurname, empName, empPatronymic, empSalary);
             return save(newEmployee);
-        } else {
-            return fndEmployee;
+        }
+        else {
+            return optEmploee.stream().findFirst().get();        
         }
 
     }

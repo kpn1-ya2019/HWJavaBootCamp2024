@@ -3,14 +3,13 @@ package com.colvir.accountant.repository;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.PaymentType;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -72,27 +71,20 @@ public class PaymentTypeRepository {
                 .getResultList().stream().findFirst().get();
     }
     public PaymentType generateNewPaymentType(String pmtTypeName) {
-        PaymentType fndPaymentType;
 
         Session session = sessionFactory.getCurrentSession();
 
-        try {
-
-            fndPaymentType = session.createQuery("select p from PaymentType p where p.name = :pmtTypeName", PaymentType.class)
+        Optional<PaymentType> optPaymentType = session.createQuery("select p from PaymentType p where p.name = :pmtTypeName", PaymentType.class)
                     .setParameter("pmtTypeName", pmtTypeName)
-                    .getResultList().stream().findFirst().get();
-
-           //to do test fndPaymentType = getByName(pmtTypeName);
-
-        } catch (EmptyResultDataAccessException e) {
-            fndPaymentType = null;
-        }
-
-        if (fndPaymentType == null) {
+                    .setFirstResult(0)
+                    .setMaxResults(1)
+                    .uniqueResultOptional();
+        
+        if (optPaymentType.isEmpty()) {
             PaymentType newPaymentType = new PaymentType(pmtTypeName);
             return save(newPaymentType);
         } else {
-            return fndPaymentType;
+            return optPaymentType.stream().findFirst().get();
         }
     }
     public PaymentType getById(Integer idPmtType) {

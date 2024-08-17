@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PaymentType {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "paymenttype_seq")
-    @SequenceGenerator(name = "paymenttype_seq", sequenceName = "paymenttype_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "paymenttype_seq", sequenceName = "paymenttype_seq", allocationSize = 1)
     private Integer   id;
     private String name;
 

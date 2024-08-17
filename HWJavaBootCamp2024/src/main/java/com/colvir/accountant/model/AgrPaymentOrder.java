@@ -12,7 +12,7 @@ public class AgrPaymentOrder {
     //Сущность: агрегат зарплаты платы (кому, сумма)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agrpaymentorder_seq")
-    @SequenceGenerator(name = "agrpaymentorder_seq", sequenceName = "agrpaymentorder_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "agrpaymentorder_seq", sequenceName = "agrpaymentorder_seq", allocationSize = 1)
     private Integer    id;
     private String  paymentTypeName;
     private String  departmentCode;

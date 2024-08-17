@@ -14,7 +14,7 @@ public class PaymentOrder {
     //Сущность: платежные поручения перевода заработной платы (кому, сумма, дата перечисления)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "paymentorder_seq")
-    @SequenceGenerator(name = "paymentorder_seq", sequenceName = "paymentorder_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "paymentorder_seq", sequenceName = "paymentorder_seq", allocationSize = 1)
     private Integer   id;
     private Integer   idType;
     private Integer   idDepartment;

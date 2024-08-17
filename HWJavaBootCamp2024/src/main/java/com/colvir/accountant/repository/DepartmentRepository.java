@@ -3,14 +3,13 @@ package com.colvir.accountant.repository;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.Department;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -101,26 +100,19 @@ public class DepartmentRepository {
   }
   public Department generateNewDepartment(String deptCode, String deptName) {
 
-        Department fndDepartment;
+      Session session = sessionFactory.getCurrentSession();
 
-        Session session = sessionFactory.getCurrentSession();
-
-      try {
-          fndDepartment = session.createQuery("select d from Department d where d.code = :deptCode", Department.class)
-                  .setParameter("deptCode", deptCode)
-                  .getResultList().stream().findFirst().get();
-
-
-        } catch (EmptyResultDataAccessException e) {
-            fndDepartment = null;
-        }
-  
-        if (fndDepartment == null) {
-            Department newDepartment = new Department(deptCode, deptName);
-            return save(newDepartment);
-        } else {
-            return fndDepartment;
-        }
+      Optional<Department> optDepartment = session.createQuery("select d from Department d where d.code = :deptCode", Department.class)
+                .setParameter("deptCode", deptCode)
+                .setFirstResult(0)
+                .setMaxResults(1)
+                .uniqueResultOptional();
+      if (optDepartment.isEmpty()) {
+          Department newDepartment = new Department(deptCode, deptName);
+          return save(newDepartment);
+      } else {
+          return optDepartment.stream().findFirst().get();
+      }
   }
 
 }

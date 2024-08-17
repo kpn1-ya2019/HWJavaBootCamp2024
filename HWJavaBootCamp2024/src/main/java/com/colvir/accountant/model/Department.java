@@ -13,7 +13,7 @@ public class Department {
     //сущность
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "department_seq")
-    @SequenceGenerator(name = "department_seq", sequenceName = "department_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "department_seq", sequenceName = "department_seq", allocationSize = 1)
     private Integer   id;
 
     private String code;

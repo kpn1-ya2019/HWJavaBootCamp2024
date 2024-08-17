@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.colvir.accountant.model.AgrPaymentOrder;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -86,7 +86,7 @@ public class AgrPaymentOrderRepository {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Integer cntDelRows =  session.createQuery("delete from AgrPaymentOrder", AgrPaymentOrder.class).executeUpdate();
+        Integer cntDelRows =  session.createMutationQuery("delete from AgrPaymentOrder").executeUpdate();
 
         log.info("Method delete {} rows before calculate", cntDelRows);
 
@@ -105,14 +105,8 @@ public class AgrPaymentOrderRepository {
                                    .setParameter("dtFrom", dtFrom)
                                    .setParameter("dtTo", dtTo)
                                    .executeUpdate();
-/*deprecated!!!
-        Integer  iRes =  session.createQuery(statementString)
-                .setParameter("dtFrom", dtFrom)
-                .setParameter("dtTo", dtTo)
-                .executeUpdate();
-*/
 
-        log.info("Method calculate do it {} rows", iRes);
+                                   log.info("Method calculate do it {} rows", iRes);
 
         return session.createQuery("select a from AgrPaymentOrder a", AgrPaymentOrder.class)
                 .getResultList();
