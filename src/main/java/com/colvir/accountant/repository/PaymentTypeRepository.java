@@ -3,6 +3,7 @@ package com.colvir.accountant.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.colvir.accountant.mapper.PaymentTypeMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class PaymentTypeRepository {
+    private final PaymentTypeMapper paymentTypeMapper;
     private final SessionFactory sessionFactory;
 
     public PaymentType save(PaymentType paymentType) {
@@ -46,8 +48,13 @@ public class PaymentTypeRepository {
 
         Session session = sessionFactory.getCurrentSession();
 
+        //PaymentType pmtForUpdate1 = session.get(PaymentType.class, updatedPmpType.getId());
+        //pmtForUpdate1 =paymentTypeMapper.updatePmtTypeToPmtType(pmtForUpdate1, updatedPmpType);
+        //return pmtForUpdate1;
+
         PaymentType pmtForUpdate = session.get(PaymentType.class, updatedPmpType.getId());
-        pmtForUpdate.setName(updatedPmpType.getName());
+        //pmtForUpdate.setName(updatedPmpType.getName());
+        pmtForUpdate = (PaymentType) session.merge(updatedPmpType);
         return pmtForUpdate;
     }
 

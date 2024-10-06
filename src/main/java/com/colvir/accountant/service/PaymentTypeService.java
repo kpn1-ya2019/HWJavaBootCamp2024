@@ -50,7 +50,7 @@ public class PaymentTypeService {
 
         PaymentType updatedPmtType = paymentTypeMapper.updatePmtTypeRequestToPmtType(paymentType, request);
 
-        paymentTypeRepository.update(updatedPmtType);
+        updatedPmtType = paymentTypeRepository.update(updatedPmtType);
 
         return paymentTypeMapper.pmtTypeToPmtTypeResponse(updatedPmtType);
     }

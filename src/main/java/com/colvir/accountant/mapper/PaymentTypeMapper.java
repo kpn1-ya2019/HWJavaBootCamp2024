@@ -28,6 +28,19 @@ public interface PaymentTypeMapper {
 
     }
 
+    /* one of way used
+    default PaymentType updatePmtTypeToPmtType(@MappingTarget PaymentType pmtTypeForUpdate, PaymentType pmtTypeRequest)
+    {
+        String name = pmtTypeRequest.getName();
+        if (name != null) {
+            pmtTypeForUpdate.setName(name);
+        }
+
+        return pmtTypeForUpdate;
+
+    }
+     */
+
     default PmtTypePageResponse paymentTypesToPmtTypePageResponse(List<PaymentType> paymentTypes) {
         List<PaymentTypeResponse> paymentTypeResponses = pmtTypesToPmtTypeResponse(paymentTypes);
         return  new PmtTypePageResponse(paymentTypeResponses);
