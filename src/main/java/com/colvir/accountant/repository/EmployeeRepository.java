@@ -52,11 +52,8 @@ public class EmployeeRepository {
                 .setParameter("idDepartment", updatedEmp.getIdDepartment())
                 .getResultList().stream().findFirst().get();
 
-        empForUpdate.setIdDepartment(updatedEmp.getIdDepartment());
-        empForUpdate.setSurname(updatedEmp.getSurname());
-        empForUpdate.setName(updatedEmp.getName());
-        empForUpdate.setPatronymic(updatedEmp.getPatronymic());
-        empForUpdate.setSalary(updatedEmp.getSalary());
+        empForUpdate = (Employee) session.merge(updatedEmp);
+
         return empForUpdate;
 
     }

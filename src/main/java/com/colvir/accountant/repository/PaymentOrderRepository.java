@@ -51,11 +51,7 @@ public class PaymentOrderRepository {
 
         PaymentOrder pmtForUpdate = session.get(PaymentOrder.class, updatedPaymentOrder.getId());
 
-        pmtForUpdate.setIdType(updatedPaymentOrder.getIdType());
-        pmtForUpdate.setIdDepartment(updatedPaymentOrder.getIdDepartment());
-        pmtForUpdate.setIdEmployee(updatedPaymentOrder.getIdEmployee());
-        pmtForUpdate.setDatePayment(updatedPaymentOrder.getDatePayment());
-        pmtForUpdate.setAmount(updatedPaymentOrder.getAmount());
+        pmtForUpdate = (PaymentOrder) session.merge(updatedPaymentOrder);
 
         return pmtForUpdate;
     }

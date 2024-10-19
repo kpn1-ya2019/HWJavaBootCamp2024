@@ -60,13 +60,7 @@ public class AgrPaymentOrderRepository {
 
         AgrPaymentOrder pmtForUpdate = session.get(AgrPaymentOrder.class, updatedAgrPaymentOrder.getId());
 
-        pmtForUpdate.setPaymentTypeName(updatedAgrPaymentOrder.getPaymentTypeName());
-        pmtForUpdate.setDepartmentCode(updatedAgrPaymentOrder.getDepartmentCode());
-        pmtForUpdate.setDepartmentName(updatedAgrPaymentOrder.getDepartmentName());
-        pmtForUpdate.setEmployeeSurname(updatedAgrPaymentOrder.getEmployeeSurname());
-        pmtForUpdate.setEmployeeName(updatedAgrPaymentOrder.getEmployeeName());
-        pmtForUpdate.setEmployeePatronymic(updatedAgrPaymentOrder.getEmployeePatronymic());
-        pmtForUpdate.setAmountPaymentOrder(updatedAgrPaymentOrder.getAmountPaymentOrder());
+        pmtForUpdate = (AgrPaymentOrder) session.merge(updatedAgrPaymentOrder);
 
         return pmtForUpdate;
     }

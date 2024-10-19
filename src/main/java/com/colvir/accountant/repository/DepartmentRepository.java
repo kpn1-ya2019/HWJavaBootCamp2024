@@ -50,11 +50,9 @@ public class DepartmentRepository {
       Session session = sessionFactory.getCurrentSession();
 
       Department deptForUpdate = session.get(Department.class, updatedDept.getId());
+      deptForUpdate = (Department) session.merge(updatedDept);
 
-      deptForUpdate.setCode(updatedDept.getCode());
-      deptForUpdate.setName(updatedDept.getName());
-
-      return updatedDept;
+      return deptForUpdate;
   }
 
   public Department delete(Integer id) {
